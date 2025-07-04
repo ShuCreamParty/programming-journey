@@ -1,0 +1,4084 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pythonプロフェッショナルへの100時間ロードマップ Vol.1 ―アルゴリズム設計と問題解決の戦略―</title>
+    <style>
+        :root {
+            --primary-color: #34495e;
+            --secondary-color: #41b883;
+            --background-color: #f4f6f9;
+            --sidebar-bg: #2c3e50;
+            --sidebar-width: 320px;
+            --header-height: 60px;
+            --text-color: #333;
+            --sidebar-text-color: #ecf0f1;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.8;
+        }
+
+        #sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        #sidebar.closed {
+            transform: translateX(calc(-1 * var(--sidebar-width)));
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            height: var(--header-height);
+            background-color: #34495e;
+            font-size: 1.2em;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        #sidebar-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 10px;
+            line-height: 1;
+        }
+
+        .sidebar-nav {
+            padding: 15px;
+        }
+
+        .sidebar-nav details {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-nav summary {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 4px;
+            list-style: none;
+        }
+
+        .sidebar-nav summary::before {
+            content: '▶ ';
+            font-size: 0.8em;
+        }
+
+        .sidebar-nav details[open]>summary::before {
+            content: '▼ ';
+        }
+
+        .sidebar-nav summary:hover {
+            background-color: #34495e;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            padding-left: 20px;
+            margin-top: 5px;
+        }
+
+        .sidebar-nav li a {
+            display: block;
+            color: var(--sidebar-text-color);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 0.95em;
+            white-space: nowrap;
+        }
+
+        .sidebar-nav li a:hover,
+        .sidebar-nav li a.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        #main-wrapper {
+            transition: margin-left 0.3s ease-in-out;
+            margin-left: var(--sidebar-width);
+        }
+
+        #main-wrapper.full-width {
+            margin-left: 0;
+        }
+
+        #header {
+            height: var(--header-height);
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 2em;
+            position: sticky;
+            top: 0;
+            z-index: 990;
+            transition: padding-left 0.3s ease-in-out;
+        }
+
+        #main-wrapper.full-width #header {
+            padding-left: 60px;
+        }
+
+        #part-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .content-wrapper {
+            padding: 2em 3em;
+            max-width: 900px;
+            margin: 2em auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - var(--header-height) - 8em);
+        }
+
+        #content-container {
+            flex-grow: 1;
+        }
+
+        .page-content {
+            display: none;
+        }
+
+        .page-content h1 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .page-content h2 {
+            color: var(--primary-color);
+            border-left: 5px solid var(--secondary-color);
+            padding-left: 10px;
+            margin-top: 40px;
+        }
+
+        .page-content h3 {
+            color: #555;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        code {
+            background-color: #eef;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        }
+
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1em;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        pre code {
+            color: inherit;
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        blockquote {
+            border-left: 4px solid #ddd;
+            padding-left: 1em;
+            margin-left: 0;
+            color: #555;
+        }
+
+        #sidebar-flyout-toggle {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+            display: none;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            line-height: 30px;
+            text-align: center;
+        }
+
+        #pagination {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2em;
+            padding-top: 1.5em;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .pagination-btn {
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #fff;
+            background-color: var(--secondary-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background-color: #36a270;
+        }
+
+        .pagination-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .search-container {
+            padding: 0 15px 15px 15px;
+        }
+
+        #search-box {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background-color: #3e5165;
+            color: #fff;
+            box-sizing: border-box;
+        }
+
+        #search-results {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        #search-results li a {
+            background-color: #34495e;
+            margin-bottom: 5px;
+        }
+
+        #search-results li a:hover {
+            background-color: var(--secondary-color);
+        }
+    </style>
+</head>
+
+<body>
+    <button id="sidebar-flyout-toggle">▶</button>
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <span>学習メニュー</span>
+            <button id="sidebar-toggle">◀</button>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="search-container">
+                <input type="text" id="search-box" placeholder="キーワード検索...">
+                <ul id="search-results"></ul>
+            </div>
+
+            <details open>
+                <summary>第1部：冒険の準備</summary>
+                <ul>
+                    <li><a href="#intro" class="nav-link">1-1: はじめに</a></li>
+                    <li><a href="#chap1-2" class="nav-link">1-2: 問題解決という冒険</a></li>
+                    <li><a href="#chap1-3" class="nav-link">1-3: 開発環境の準備</a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>第2部：はじめてのプログラミング</summary>
+                <ul>
+                    <li><a href="#chap2-1" class="nav-link">2-1: `print()`による出力</a></li>
+                    <li><a href="#chap2-2" class="nav-link">2-2: 四則演算</a></li>
+                    <li><a href="#chap2-3" class="nav-link">2-3: コメント</a></li>
+                    <li><a href="#chap2-4" class="nav-link">2-4: 変数</a></li>
+                    <li><a href="#chap2-5" class="nav-link">2-5: 文字列の操作</a></li>
+                    <li><a href="#chap2-6" class="nav-link">2-6: `input()`による入力</a></li>
+                    <li><a href="#chap2-7" class="nav-link">2-7: 型と型変換</a></li>
+                    <li><a href="#part2-ex" class="nav-link"><b>2-E: 部末演習</b></a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>第3部：流れを操る</summary>
+                <ul>
+                    <li><a href="#chap3-1" class="nav-link">3-1: if文による条件分岐</a></li>
+                    <li><a href="#chap3-2" class="nav-link">3-2: 比較・論理演算子</a></li>
+                    <li><a href="#chap3-3" class="nav-link">3-3: elifを使った複数条件</a></li>
+                    <li><a href="#chap3-4" class="nav-link">3-4: forループとrange()</a></li>
+                    <li><a href="#chap3-5" class="nav-link">3-5: whileループと制御</a></li>
+                    <li><a href="#part3-ex" class="nav-link"><b>3-E: 部末演習</b></a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>第4部：データを捌く</summary>
+                <ul>
+                    <li><a href="#chap4-1" class="nav-link">4-1: リストの基本と応用（スライシング）</a></li>
+                    <li><a href="#chap4-2" class="nav-link">4-2: リストとループ</a></li>
+                    <li><a href="#chap4-3" class="nav-link">4-3: 複数データの入力</a></li>
+                    <li><a href="#chap4-4" class="nav-link">4-4: 辞書</a></li>
+                    <li><a href="#chap4-5" class="nav-link">4-5: セットとタプル</a></li>
+                    <li><a href="#chap4-6" class="nav-link">4-6: 文字列の応用と正規表現</a></li>
+                    <li><a href="#chap4-7" class="nav-link">4-7: 問題の読み解き方</a></li>
+                    <li><a href="#part4-ex" class="nav-link"><b>4-E: 部末演習</b></a></li>
+                    <li><a href="#challenge4" class="nav-link" style="color: #ffb74d;"><b>挑戦：Dランク問題</b></a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>第5部：高速化の作法</summary>
+                <ul>
+                    <li><a href="#chap5-1" class="nav-link">5-1: 計算量とオーダー記法</a></li>
+                    <li><a href="#chap5-2" class="nav-link">5-2: 高速な入出力 (sys.stdin.readline)</a></li>
+                    <li><a href="#chap5-3" class="nav-link">5-3: リスト内包表記</a></li>
+                    <li><a href="#chap5-4" class="nav-link">5-4: deque (高速キュー)</a></li>
+                    <li><a href="#chap5-5" class="nav-link">5-5: Counter (自動集計)</a></li>
+                    <li><a href="#chap5-6" class="nav-link">5-6: itertools (順列・組合せ)</a></li>
+                    <li><a href="#part5-ex" class="nav-link"><b>5-E: 部末演習</b></a></li>
+                    <li><a href="#challenge5" class="nav-link" style="color: #ffb74d;"><b>挑戦：Cランク & ABC(B)</b></a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>第6部：探索アルゴリズム</summary>
+                <ul>
+                    <li><a href="#chap6-1" class="nav-link">6-1: 全探索</a></li>
+                    <li><a href="#chap6-2" class="nav-link">6-2: 二分探索</a></li>
+                    <li><a href="#chap6-3" class="nav-link">6-3: 再帰関数</a></li>
+                    <li><a href="#chap6-4" class="nav-link">6-4: 深さ優先探索(DFS)</a></li>
+                    <li><a href="#chap6-5" class="nav-link">6-5: 幅優先探索(BFS)</a></li>
+                    <li><a href="#part6-ex" class="nav-link"><b>6-E: 部末演習</b></a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>第7部：動的計画法(DP)</summary>
+                <ul>
+                    <li><a href="#chap7-1" class="nav-link">7-1: DPの心：メモ化再帰</a></li>
+                    <li><a href="#chap7-2" class="nav-link">7-2: 配るDPと貰うDP</a></li>
+                    <li><a href="#chap7-3" class="nav-link">7-3: DPパターン(ナップサック)</a></li>
+                    <li><a href="#part7-ex" class="nav-link"><b>7-E: 部末演習</b></a></li>
+                    <li><a href="#challenge7" class="nav-link" style="color: #ffb74d;"><b>挑戦：Bランク & ABC(C)</b></a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>第8部：応用アルゴリズム</summary>
+                <ul>
+                    <li><a href="#chap8-1" class="nav-link">8-1: 優先度付きキュー</a></li>
+                    <li><a href="#chap8-2" class="nav-link">8-2: ダイクストラ法</a></li>
+                    <li><a href="#chap8-3" class="nav-link">8-3: Union-Find木</a></li>
+                    <li><a href="#chap8-4" class="nav-link">8-4: 最小全域木</a></li>
+                    <li><a href="#part8-ex" class="nav-link"><b>8-E: 部末演習</b></a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>第9部：高度なテクニック</summary>
+                <ul>
+                    <li><a href="#chap9-1" class="nav-link">9-1: 累積和・いもす法</a></li>
+                    <li><a href="#chap9-2" class="nav-link">9-2: しゃくとり法</a></li>
+                    <li><a href="#chap9-3" class="nav-link">9-3: 座標圧縮</a></li>
+                    <li><a href="#chap9-4" class="nav-link">9-4: セグメント木</a></li>
+                    <li><a href="#part9-ex" class="nav-link"><b>9-E: 部末演習</b></a></li>
+                    <li><a href="#challenge9" class="nav-link" style="color: #ffb74d;"><b>挑戦：Aランク & ABC(D)</b></a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>第10部：整数論と組み合わせ</summary>
+                <ul>
+                    <li><a href="#chap10-1" class="nav-link">10-1: 素数と約数</a></li>
+                    <li><a href="#chap10-2" class="nav-link">10-2: 合同式と逆元</a></li>
+                    <li><a href="#chap10-3" class="nav-link">10-3: 組み合わせ(nCr)</a></li>
+                    <li><a href="#part10-ex" class="nav-link"><b>10-E: 部末演習</b></a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>第11部：ヒューリスティック</summary>
+                <ul>
+                    <li><a href="#chap11-1" class="nav-link">11-1: ヒューリスティックとは</a></li>
+                    <li><a href="#chap11-2" class="nav-link">11-2: 貪欲法と山登り法</a></li>
+                    <li><a href="#chap11-3" class="nav-link">11-3: 焼きなまし法</a></li>
+                    <li><a href="#part11-ex" class="nav-link"><b>11-E: 部末演習</b></a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>最終問題</summary>
+                <ul>
+                    <li><a href="#final-challenge" class="nav-link" style="color: #ff5252;"><b>挑戦：Sランク & ABC(E)</b></a>
+                    </li>
+                </ul>
+            </details>
+            <details>
+                <summary>巻末付録</summary>
+                <ul>
+                    <li><a href="#ap-a" class="nav-link">A: Pythonicな小技集</a></li>
+                    <li><a href="#ap-b" class="nav-link"><b>B: キャリアパス</b></a></li>
+                    <li><a href="#ap-c" class="nav-link"><b>C: AIへの招待</b></a></li>
+                    <li><a href="#ap-d" class="nav-link">D: エラー早見表</a></li>
+                    <li><a href="#ap-e" class="nav-link">E: バグとの戦い方</a></li>
+                </ul>
+            </details>
+        </nav>
+    </aside>
+
+    <div id="main-wrapper">
+        <header id="header">
+            <span id="part-title"></span>
+        </header>
+        <div class="content-wrapper">
+            <div id="content-container">
+
+                <div class="page-content" id="intro">
+                    <h1>1-1: はじめに</h1>
+                    <h2>ようこそ、思考をコードに変える世界へ</h2>
+                    <p>
+                        本書を手に取っていただき、ありがとうございます。<br>
+                        この教材は、「プログラミングに初めて挑戦するけれど、どうせなら実践的な力を身につけたい」という方から、「Pythonの基本的な書き方は覚えたけれど、もっと難しい問題を解けるようになりたい」という方まで、全ての「問題解決能力」を鍛えたい人のための戦略的な教科書です。
+                    </p>
+                    <p>
+                        最終的なゴールは、<strong>PaizaのSランク</strong>や<strong>AtCoderの難問</strong>を自力で解き明かす「論理的思考力」と「実装力」を身につけること。それは、単に文法を暗記するのではなく、目の前の課題を解決するための最適な手順を自分で考え、プログラムとして形にする力です。この力は、どんなIT分野に進んでも、あなたの最も信頼できる武器になるでしょう。
+                    </p>
+
+                    <h2>なぜ、学ぶ言語がPythonだと最高なのか？</h2>
+                    <p>
+                        世の中にはたくさんのプログラミング言語がありますが、私たちがPythonを選ぶのには明確な理由があります。
+                    </p>
+                    <ul>
+                        <li><strong>書き方がシンプル：</strong> まるで英語のように直感的に書けるため、文法で悩む時間が短く、問題の「解き方」を考える本質的な部分に集中できます。</li>
+                        <li><strong>便利な道具箱が標準装備：</strong> Pythonには、複雑な処理を短いコードで実現できる強力な「道具（標準ライブラリ）」が最初からたくさん用意されています。
+                        </li>
+                    </ul>
+                    <p>
+                        本書は、このPythonの強みを最大限に活かし、あなたの学習を力強くサポートします。
+                    </p>
+                    <p>
+                        さあ、冒険の準備を始めましょう！
+                    </p>
+                </div>
+
+                <div class="page-content" id="chap1-2">
+                    <h1>1-2: 問題解決という冒険</h1>
+                    <h2>プログラミングは「魔法の杖」である</h2>
+                    <p>
+                        これから私たちが学んでいくプログラミングは、それ自体が目的ではありません。それは、あなたが思い描いたことを実現するための「<strong>魔法の杖</strong>」です。
+                    </p>
+                    <p>
+                        例えば、あなたが「毎日の献立を考えるのが面倒だ」という問題を抱えているとします。プログラミングという魔法を使えば、「冷蔵庫の中身リスト」と「作りたい料理の気分」を唱えるだけで、「おすすめレシピと買い物リスト」を自動で作り出す杖を創造できるのです。
+                    </p>
+                    <p>
+                        競技プログラミングは、この「魔法の杖の作り方」を、パズルを解くような感覚で楽しくトレーニングできる、最高の訓練場なのです。
+                    </p>
+                    <h2>「見立てる」力</h2>
+                    <p>
+                        複雑な問題を解決するための第一歩は、目の前の問題を、私たちがよく知っているシンプルな形に「<strong>見立てる</strong>」ことです。
+                    </p>
+                    <ul>
+                        <li><strong>「電車の乗り換え」</strong>は、駅を「点」、線路を「線」で結んだ「<strong>すごろくのマップ</strong>」に見立てることができます。</li>
+                        <li><strong>「クラスの名簿」</strong>は、名前が順番に並んだ「<strong>整理されたカードの束</strong>」に見立てることができます。</li>
+                        <li><strong>「複数の予定が重なっていないか」</strong>を調べるのは、数直線の上に「<strong>時間の帯</strong>」を置いて、それが重なるか調べる問題に見立てられます。
+                        </li>
+                    </ul>
+                    <p>
+                        このように問題を身近な形に置き換えることができれば、先人たちが「こういうすごろくは、こうすれば一番早くゴールできるよ」と見つけてくれた、たくさんの攻略法（＝アルゴリズム）を使えるようになります。
+                    </p>
+                    <p>
+                        この教材で学ぶのは、まさにこの「問題を簡単な形に見立てて、効率的な手順で解く力」なのです。
+                    </p>
+                </div>
+
+                <div class="page-content" id="chap1-3">
+                    <h1>1-3: 開発環境の準備</h1>
+                    <h2>魔法の杖を振るう場所</h2>
+                    <p>
+                        プログラミングを始めるには、コードを書いたり実行したりするための「作業場」が必要です。料理に台所が必要なのと同じですね。この作業場を「開発環境」と呼びます。
+                    </p>
+                    <p>
+                        競技プログラミングの問題を解くサイト（オンラインジャッジ）でもコードは書けますが、それは「キャンプ場のコンロ」のようなものです。手軽ですが、本格的な料理には向きません。
+                    </p>
+                    <p>
+                        私たちは、この教材を通じて本格的なスキルを身につけることを目指します。そのため、<strong>自分のPCにプロ仕様の「システムキッチン」を構築することを強く推奨します。</strong>一度作ってしまえば、今後の学習効率が何倍にもなります。
+                    </p>
+
+                    <h2>ローカル開発環境を整えよう</h2>
+                    <p>
+                        これから、あなたのPCにPythonと、最強のコード編集ツール「Visual Studio Code (VSCode)」を導入します。以下の手順に従って、一歩ずつ進めましょう。
+                    </p>
+
+                    <h3>1. Python本体のインストール</h3>
+                    <p>まず、魔法の杖の本体であるPythonをPCに入れます。</p>
+                    <ol>
+                        <li>公式サイト <a href="https://www.python.org/downloads/" target="_blank">python.org/downloads/</a>
+                            にアクセスします。</li>
+                        <li>「Download Python 3.x.x」のような黄色いボタンをクリックして、インストーラーをダウンロードします。</li>
+                        <li>ダウンロードしたファイルを開きます。<strong>ここで非常に重要な設定があります。</strong>ウィンドウ下部にある<strong>「Add Python.exe to
+                                PATH」というチェックボックスに、必ずチェックを入れてください。</strong>これにチェックを入れると、「どこからでもPythonの魔法を唱えられる」ようになります。
+                        </li>
+                        <li>「Install Now」をクリックし、インストールが完了するのを待ちます。</li>
+                    </ol>
+
+                    <h3>2. VSCodeのインストール</h3>
+                    <p>次に、杖を快適に振るうための作業台、VSCodeを導入します。</p>
+                    <ol>
+                        <li>公式サイト <a href="https://code.visualstudio.com/download"
+                                target="_blank">code.visualstudio.com/download</a> にアクセスします。</li>
+                        <li>あなたのPCのOS（Windows, Macなど）に合ったボタンをクリックして、インストーラーをダウンロードします。</li>
+                        <li>ダウンロードしたファイルを開き、画面の指示に従ってインストールを進めます。（基本的には全て「はい」や「次へ」でOKです）</li>
+                    </ol>
+
+                    <h3>3. VSCodeを最強のPythonエディタにする</h3>
+                    <p>最後に、VSCodeに「Python専用の拡張機能」を入れて、最強の作業場を完成させます。</p>
+                    <ol>
+                        <li>VSCodeを起動します。</li>
+                        <li>画面左側にある、四角が4つ並んだようなアイコン（拡張機能ビュー）をクリックします。</li>
+                        <li>上部の検索ボックスに「<strong>Python</strong>」と入力します。</li>
+                        <li>一番上に出てくる、発行元が「Microsoft」となっているものをクリックし、「インストール」ボタンを押します。これで、コードを書きながらヒントが出たり、間違いを指摘してくれたりするようになります。
+                        </li>
+                        <li>同様に、検索ボックスに「<strong>Japanese Language
+                                Pack</strong>」と入力し、Microsoft製の日本語化パックをインストールすると、メニューなどが日本語になって安心です。</li>
+                    </ol>
+                    <p>
+                        これで、冒険の準備は全て整いました！次の第2部から、いよいよ最初の呪文<code>print()</code>を唱えてみましょう！
+                    </p>
+                </div>
+
+                <div class="page-content" id="chap2-1">
+                    <h1>2-1: `print()`による出力</h1>
+                    <h2>コンピュータに話しかける最初の呪文</h2>
+                    <p>
+                        プログラミングの世界へようこそ！ここから、あなたがコンピュータに命令を出し、その結果を画面に表示させるための、最初の、そして最も基本的な魔法<code>print()</code>を学びます。
+                    </p>
+                    <p>
+                        <code>print()</code>は、カッコの中に入れたものを画面に表示する、という非常にシンプルな機能を持っています。
+                    </p>
+
+                    <h3>文字列の出力</h3>
+                    <p>
+                        まず、文字や文章（これを<strong>文字列</strong>と呼びます）を表示させてみましょう。文字列を表示させるには、<code>" "</code>（ダブルクォーテーション）または<code>' '</code>（シングルクォーテーション）で囲む、というルールがあります。
+                    </p>
+                    <pre><code>print("Hello, World!")
+</code></pre>
+                    <p>上のコードを実行すると、画面に `Hello, World!` と表示されます。</p>
+
+                    <h3>数値の出力</h3>
+                    <p>
+                        <code>print()</code>は、文字列だけでなく数値も表示できます。数値の場合は、文字列と違ってクォーテーションで囲む必要はありません。
+                    </p>
+                    <pre><code>print(123)
+print(3.14)
+</code></pre>
+                    <p>これを実行すると、画面に `123` と `3.14` がそれぞれ改行されて表示されます。</p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】最初の挨拶</h3>
+                    <blockquote>
+                        <code>print()</code>を使って、画面に "Hello Python" という文字列を表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong> "Hello Python"
+                            という文字列を<code>print()</code>のカッコの中に入れます。文字列なので、クォーテーションで囲むのを忘れないようにしましょう。</p>
+                        <pre><code>print("Hello Python")
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】数値の表示</h3>
+                    <blockquote>
+                        <code>print()</code>を使って、数値の <code>100</code> を表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong> 数値なのでクォーテーションは不要です。<code>print(100)</code> と書きます。</p>
+                        <pre><code>print(100)
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題3】2行の出力</h3>
+                    <blockquote>
+                        <code>print()</code>を2回使って、1行目に "ようこそ", 2行目に "冒険の世界へ" と表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong>
+                            <code>print()</code>は、表示が終わると自動的に改行します。そのため、<code>print()</code>を2回書けば、結果は2行に分かれて表示されます。
+                        </p>
+                        <pre><code>print("ようこそ")
+print("冒険の世界へ")
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap2-2">
+                    <h1>2-2: 四則演算</h1>
+                    <h2>コンピュータを電卓にする</h2>
+                    <p>
+                        プログラミングの強力な機能の一つは、複雑な計算を一瞬で実行できることです。基本的な「四則演算」と、競技プログラミングで頻出する演算子を学びましょう。計算結果は、<code>print()</code>を使ってそのまま表示できます。
+                    </p>
+                    <pre><code># 足し算
+print(10 + 5) # 15
+
+# 引き算
+print(10 - 3) # 7
+
+# 掛け算
+print(5 * 3) # 15
+
+# 割り算
+print(10 / 3) # 3.333...
+
+# べき乗（2の3乗）
+print(2 ** 3) # 8
+</code></pre>
+
+                    <h3>競プロでよく使う特殊な割り算</h3>
+                    <p>
+                        通常の割り算 <code>/</code> に加えて、競技プログラミングでは以下の2つの割り算を頻繁に使います。
+                    </p>
+                    <ul>
+                        <li><strong>切り捨て除算 <code>//</code></strong>: 割り算の商の「整数部分」だけを求めます。</li>
+                        <li><strong>剰余（余り） <code>%</code></strong>: 割り算の「余り」を求めます。</li>
+                    </ul>
+                    <pre><code># 10を3で割った商の整数部分
+print(10 // 3) # 3
+
+# 10を3で割った余り
+print(10 % 3) # 1
+</code></pre>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】消費税の計算</h3>
+                    <blockquote>
+                        1000円の商品に消費税10%がかかると、支払う金額はいくらになりますか？ 1000 × 1.1 の計算結果を表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>print(1000 * 1.1) # 1100.0
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】正方形の面積</h3>
+                    <blockquote>
+                        一辺の長さが8の正方形の面積を、べき乗演算子<code>**</code>を使って計算してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>print(8 ** 2) # 64
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題3】あまりの活用</h3>
+                    <blockquote>
+                        20人の生徒を3人ずつのグループに分けると、何グループできて、何人余りますか？ 切り捨て除算<code>//</code>と剰余<code>%</code>を使って、それぞれ計算してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code># グループ数
+print(20 // 3) # 6
+
+# 余りの人数
+print(20 % 3) # 2
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap2-3">
+                    <h1>2-3: コメント</h1>
+                    <h2>プログラムにメモを残す方法</h2>
+                    <p>
+                        プログラムが長くなったり複雑になったりすると、「この部分は何をする処理だっけ？」と後から見返したときに分からなくなることがあります。また、他の人があなたのコードを読むときにも、処理の意図が伝わりにくいかもしれません。
+                    </p>
+                    <p>
+                        そんなときのために、プログラムの中に人間用の「メモ」を残す機能があります。それが<strong>コメント</strong>です。
+                    </p>
+
+                    <h3>1行のコメント</h3>
+                    <p>
+                        Pythonでは、シャープ記号 <code>#</code> を書くと、その行の <code>#</code> 以降の部分はプログラムとして実行されなくなります。
+                    </p>
+                    <pre><code># この行はコメントなので、コンピュータには無視されます。
+print(10 + 5) # 足し算の結果を表示。ここもコメントです。
+</code></pre>
+
+                    <h3>複数行のコメント（範囲コメント）</h3>
+                    <p>
+                        複数行にわたってコメントを書きたい場合は、各行の先頭に <code>#</code> を置くか、あるいは文字列を作るための三重クォーテーション <code>"""</code> または
+                        <code>'''</code> で全体を囲む方法がよく使われます。
+                    </p>
+                    <pre><code>"""
+ここは複数行のコメントです。
+関数の説明や、一時的にコードの広い範囲を
+無効化したいときなどに便利です。
+"""
+print("この行は実行されます")
+
+'''
+こちらも同じように
+複数行のコメントとして
+使うことができます。
+'''
+</code></pre>
+                    <p>（厳密には、これは「複数行の文字列」を作っているだけですが、どこにも代入されていないため、事実上のコメントとして機能します）</p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】処理内容のメモ</h3>
+                    <blockquote>
+                        <code># 自分の名前を表示します</code> というコメントを書き、その次の行で、実際に自分の名前を表示する<code>print()</code>文を書いてください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code># 自分の名前を表示します
+print("Taro Yamada")
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】一時的に無効化</h3>
+                    <blockquote>
+                        以下の2行のコードのうち、引き算の行だけを1行コメントを使って実行されないようにしてください。
+                        <pre><code>print(100 + 20)
+print(100 - 20)</code></pre>
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>print(100 + 20)
+# print(100 - 20)
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題3】複数行の無効化</h3>
+                    <blockquote>
+                        以下の3行のコードを、三重クォーテーションを使ってすべて実行されないようにしてください。
+                        <pre><code>print("りんご")
+print("ばなな")
+print("みかん")</code></pre>
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>"""
+print("りんご")
+print("ばなな")
+print("みかん")
+"""
+</code></pre>
+                    </details>
+                </div>
+                <div class="page-content" id="chap2-4">
+                    <h1>2-4: 変数</h1>
+                    <h2>データに名前をつける箱</h2>
+                    <p>
+                        プログラミングでは、計算結果や文字列などのデータを、後で再利用するために一時的に保管しておくことがよくあります。そのデータを保管する「箱」に名前を付けたものが「<strong>変数</strong>」です。
+                    </p>
+                    <p>
+                        <code>変数名 = 値</code> のように書くことで、値をその名前の変数に「代入」できます。
+                    </p>
+                    <pre><code># priceという名前の変数に、150という数値を入れる
+apple_price = 150
+
+# 3個分の値段を計算して表示
+print(apple_price * 3)
+
+# priceの値を200に変更（上書き）する
+apple_price = 200
+
+# 再度、3個分の値段を計算
+print(apple_price * 3)
+</code></pre>
+                    <p>このように、一度代入した後でも、変数の値は自由に変更（上書き）できます。</p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】自己紹介</h3>
+                    <blockquote>
+                        <code>name</code>という変数にあなたの名前（文字列）、<code>age</code>という変数にあなたの年齢（整数）を代入し、それぞれの変数を<code>print()</code>で表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>name = "Taro Yamada"
+age = 25
+
+print(name)
+print(age)
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】値の更新</h3>
+                    <blockquote>
+                        変数<code>x</code>に<code>10</code>を代入します。次の行で、<code>x</code>の値を今の値の2倍に更新してください。最後に<code>x</code>の値を表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong> <code>x = x * 2</code> のように、自分自身の値を使って計算し、再度自分自身に代入することで値を更新できます。これは
+                            <code>x *= 2</code> と短く書くこともできます。
+                        </p>
+                        <pre><code>x = 10
+x = x * 2 # または x *= 2
+print(x) # 20
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap2-5">
+                    <h1>2-5: 文字列の操作</h1>
+                    <h2>文字を連結・反復する</h2>
+                    <p>
+                        変数と<code>+</code>, <code>*</code>演算子を組み合わせることで、文字列を柔軟に操作できます。
+                    </p>
+                    <h3>文字列の連結</h3>
+                    <p>
+                        <code>+</code>演算子を使うと、文字列同士を連結できます。
+                    </p>
+                    <pre><code>last_name = "山田"
+first_name = "太郎"
+
+full_name = last_name + first_name
+print(full_name) # 山田太郎
+</code></pre>
+
+                    <h3>文字列の繰り返し</h3>
+                    <p>
+                        <code>*</code>演算子を使うと、文字列を好きな回数だけ繰り返すことができます。
+                    </p>
+                    <pre><code>bar = "=" * 10
+print(bar) # ==========
+</code></pre>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】挨拶文の作成</h3>
+                    <blockquote>
+                        変数<code>name</code>に好きな名前を代入し、「こんにちは、〇〇さん！」という文章を作成して表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>name = "サトシ"
+message = "こんにちは、" + name + "さん！"
+print(message)
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】区切り線の作成</h3>
+                    <blockquote>
+                        <code>-</code>（ハイフン）を20回繰り返した区切り線を表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>print("-" * 20)
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap2-6">
+                    <h1>2-6: `input()`による入力</h1>
+                    <h2>ユーザーから情報を受け取る</h2>
+                    <p>
+                        これまではプログラムに直接値を書いていましたが、実行するたびに違う値で計算したいことがあります。<code>input()</code>関数を使うと、ユーザーがキーボードで入力した値を受け取ることができます。
+                    </p>
+                    <pre><code>print("あなたのお名前は？")
+name = input()
+print(name + "さん、はじめまして！")
+</code></pre>
+                    <p>
+                        上のコードを実行すると、プログラムは<code>input()</code>の行で一時停止し、あなたの入力を待ちます。入力してEnterキーを押すと、その内容が変数<code>name</code>に代入され、次の行が実行されます。
+                    </p>
+
+                    <h2>重要：input()は常に文字列を返す</h2>
+                    <p>
+                        ここで絶対に覚えてほしいルールがあります。それは「<code>input()</code>で受け取ったデータは、たとえ<code>123</code>のような数字を入力したとしても、<strong>すべて文字列(str)型になる</strong>」ということです。
+                    </p>
+                    <pre><code>print("好きな数字を入力してください。")
+num_str = input()
+print("あなたが入力したのは文字列の「" + num_str + "」です。")
+print(type(num_str)) # <class 'str'> と表示される
+</code></pre>
+                    <p>このままでは計算に使えません。次の章で、これを数値に変換する方法を学びます。</p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】オウム返し</h3>
+                    <blockquote>
+                        ユーザーが入力した文字列を、そのまま次の行に表示するプログラムを作成してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>s = input()
+print(s)
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap2-7">
+                    <h1>2-7: 型と型変換</h1>
+                    <h2>文字と数字は違う！</h2>
+                    <p>
+                        コンピュータの世界では、同じ「10」でも、文字列の<code>"10"</code>と、数値の<code>10</code>は全くの別物として扱われます。このデータの種類のことを<strong>データ型（または単に型）</strong>と呼びます。
+                    </p>
+                    <ul>
+                        <li><code>str</code> (string): 文字列型</li>
+                        <li><code>int</code> (integer): 整数型</li>
+                    </ul>
+                    <p><code>input()</code>で受け取った文字列型の数字を、計算に使える整数型に変換するには、<code>int()</code>関数を使います。</p>
+                    <pre><code>num_str = input("数字を入力してください: ") # 例として "100" と入力
+x = int(num_str) # 文字列 "100" を 数値 100 に変換
+y = x + 50
+print(y) # 150
+</code></pre>
+
+                    <h2>数値を文字列に変換する `str()`</h2>
+                    <p>
+                        逆に、数値と文字列を<code>+</code>で連結したい場合は、数値を<code>str()</code>関数で文字列に変換する必要があります。
+                    </p>
+                    <pre><code>age = 20
+# print("年齢は" + age + "歳です") # ← これはエラーになる！
+print("年齢は" + str(age) + "歳です") # 正しい
+</code></pre>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】2つの数の足し算</h3>
+                    <blockquote>
+                        1行目で整数A、2行目で整数Bをそれぞれ入力として受け取り、その和を計算して表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>A_str = input()
+B_str = input()
+A_int = int(A_str)
+B_int = int(B_str)
+print(A_int + B_int)
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】来年の年齢</h3>
+                    <blockquote>
+                        あなたの今の年齢を入力すると、「来年は〇〇歳ですね。」と表示するプログラムを作成してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>age_str = input()
+age_int = int(age_str)
+next_age = age_int + 1
+print("来年は" + str(next_age) + "歳ですね。")
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="part2-ex">
+                    <h1>2-E: 部末演習</h1>
+                    <h2>コンピュータとの対話の総仕上げ</h2>
+                    <p>
+                        第2部、お疲れ様でした！出力、計算、変数、入力、型変換という、プログラミングの第一歩を学びました。
+                        ここでは、その知識を組み合わせて、少しだけ複雑な問題を解いてみましょう。
+                    </p>
+                    <hr>
+                    <h3>【演習問題1】長方形の面積</h3>
+                    <blockquote>
+                        1行目に長方形の縦の長さ、2行目に横の長さが、それぞれ整数で与えられます。この長方形の面積を計算して表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>思考プロセスと解答例</summary>
+                        <p><strong>考え方:</strong>
+                        <ol>
+                            <li>1行目の入力を受け取り、変数<code>height_str</code>に入れる。</li>
+                            <li>2行目の入力を受け取り、変数<code>width_str</code>に入れる。</li>
+                            <li>それぞれを<code>int()</code>で数値に変換する。</li>
+                            <li>掛け算して面積を計算し、<code>print()</code>で表示する。</li>
+                        </ol>
+                        </p>
+                        <pre><code>height_str = input()
+width_str = input()
+
+height = int(height_str)
+width = int(width_str)
+
+area = height * width
+print(area)
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【演習問題2】自己紹介ジェネレーター</h3>
+                    <blockquote>
+                        1行目にあなたの名前、2行目にあなたの出身地、3行目にあなたの年齢が入力されます。これらを使って、「私は〇〇です。△△から来ました。年齢は□□歳です。」という一文を完成させて表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>思考プロセスと解答例</summary>
+                        <p><strong>考え方:</strong>
+                            3つの情報をそれぞれ<code>input()</code>で受け取ります。年齢は計算には使いませんが、文字列として連結する必要があります。全て文字列なので、<code>+</code>で繋ぎ合わせればOKです。
+                        </p>
+                        <pre><code>name = input()
+hometown = input()
+age = input() # str型のままでOK
+
+# 文字列を連結して文章を作る
+sentence = "私は" + name + "です。" + hometown + "から来ました。年齢は" + age + "歳です。"
+print(sentence)
+</code></pre>
+                    </details>
+                </div>
+
+                <!-- =============== 第3部：流れを操る =============== -->
+                <div class="page-content" id="chap3-1">
+                    <h1>3-1: if文による条件分岐</h1>
+                    <h2>プログラムに「判断」させる</h2>
+                    <p>
+                        これまでのプログラムは、上から下へ一本道をただ進むだけでした。しかし、実際のプログラムは「もしAだったらこうする、そうでなければこうする」というように、状況に応じた「判断」が必要です。
+                    </p>
+                    <p>
+                        この「もし〜なら」を実現するのが<strong><code>if</code>文</strong>です。
+                    </p>
+                    <pre><code>age = 15
+
+if age >= 20:
+    print("あなたは大人です。")
+else:
+    print("あなたは未成年です。")
+</code></pre>
+                    <p>
+                        上の例では、変数<code>age</code>が20以上かどうかを判定し、条件が正しい（<strong>真:
+                            True</strong>）場合は<code>if</code>の直後の処理を、正しくない（<strong>偽:
+                            False</strong>）場合は<code>else</code>の直後の処理を実行します。
+                    </p>
+                    <h3>インデントの重要性</h3>
+                    <p>
+                        <code>if</code>や<code>else</code>の行の最後には必ずコロン<code>:</code>を付けます。そして、その条件のときに実行したい処理の行頭には、<strong>インデント</strong>（半角スペース4つ分の字下げ）を入れます。このインデントによって、Pythonはどこからどこまでが<code>if</code>の処理範囲なのかを判断します。
+                    </p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】正の数の判定</h3>
+                    <blockquote>
+                        入力された整数<code>N</code>が0より大きい場合のみ、"positive"と表示するプログラムを書いてください。（0や負の場合は何も表示しなくてOKです）
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong> 「〜でない場合」の処理が不要なときは、<code>else</code>は省略できます。</p>
+                        <pre><code>N = int(input())
+if N > 0:
+    print("positive")
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】パスワードの一致</h3>
+                    <blockquote>
+                        正しいパスワードが"pass123"だとします。ユーザーに入力を求め、もし入力が正しいパスワードと一致したら"ログイン成功"、間違っていたら"ログイン失敗"と表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong> 文字列同士が等しいかどうかは、<code>==</code>演算子で比較します。</p>
+                        <pre><code>password = input()
+if password == "pass123":
+    print("ログイン成功")
+else:
+    print("ログイン失敗")
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap3-2">
+                    <h1>3-2: 比較・論理演算子</h1>
+                    <h2>複雑な条件を作るための道具</h2>
+                    <p>
+                        <code>if</code>文の条件式を、より複雑で柔軟にするための道具が「比較演算子」と「論理演算子」です。
+                    </p>
+                    <h3>比較演算子</h3>
+                    <p>2つの値の関係を比較し、結果をTrueかFalseで返します。</p>
+                    <ul>
+                        <li><code>A > B</code> : AはBより大きい</li>
+                        <li><code>A < B</code> : AはBより小さい</li>
+                        <li><code>A >= B</code>: AはB以上（A > B または A == B）</li>
+                        <li><code>A <= B</code>: AはB以下（A < B または A==B）</li>
+                        <li><code>A == B</code>: AとBは等しい</li>
+                        <li><code>A != B</code>: AとBは等しくない</li>
+                    </ul>
+
+                    <h3>論理演算子</h3>
+                    <p>複数の条件式を組み合わせるために使います。</p>
+                    <ul>
+                        <li><code>A and B</code>: 条件Aと条件Bが、<strong>両方とも</strong>TrueのときだけTrueになる。</li>
+                        <li><code>A or B</code> : 条件Aと条件Bの、<strong>どちらか一方でも</strong>TrueならTrueになる。</li>
+                        <li><code>not A</code> : 条件Aの結果を反転させる（TrueならFalseに、FalseならTrueに）。</li>
+                    </ul>
+                    <pre><code>score = 85
+attendance_rate = 0.9
+
+# and: スコアが80以上「かつ」出席率が0.8以上
+if score >= 80 and attendance_rate >= 0.8:
+    print("成績は優です")
+
+# or: スコアが90以上「または」出席率が1.0
+if score >= 90 or attendance_rate == 1.0:
+    print("特別賞です")
+</code></pre>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】範囲の判定</h3>
+                    <blockquote>
+                        入力された整数<code>N</code>が、10以上かつ50以下である場合に"OK"と表示するプログラムを書いてください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>N = int(input())
+if N >= 10 and N <= 50:
+    print("OK")
+</code></pre>
+                        <p>Pythonでは <code>if 10 <= N <= 50:</code> のように、数学の不等式に近い形で書くこともできます。</p>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】範囲外の判定</h3>
+                    <blockquote>
+                        入力された整数<code>N</code>が、0未満または100より大きい場合に"範囲外です"と表示するプログラムを書いてください。
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong> 「または」なので<code>or</code>を使います。</p>
+                        <pre><code>N = int(input())
+if N < 0 or N > 100:
+    print("範囲外です")
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap3-3">
+                    <h1>3-3: elifを使った複数条件</h1>
+                    <h2>3つ以上の選択肢を作る</h2>
+                    <p>
+                        「もしAなら…、そうではなくてもしBなら…、どちらでもなければ…」のように、3つ以上の選択肢から1つを選びたい場合があります。そんなときに使うのが<code>elif</code>（エルスイフと読みます）です。
+                    </p>
+                    <pre><code>score = 75
+
+if score >= 80:
+    print("優")
+elif score >= 60:
+    print("良")
+elif score >= 40:
+    print("可")
+else:
+    print("不可")
+# 出力: 良
+</code></pre>
+                    <p>
+                        <code>if</code>から始まり、条件は上から順番に判定されます。一度いずれかの条件が真になると、その中の処理が実行され、残りの<code>elif</code>や<code>else</code>はすべて無視されます。
+                    </p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】信号機</h3>
+                    <blockquote>
+                        信号の色が文字列で入力されます。もし"green"なら"進め"、"yellow"なら"注意"、"red"なら"止まれ"、それ以外なら"無効な色です"と表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>color = input()
+
+if color == "green":
+    print("進め")
+elif color == "yellow":
+    print("注意")
+elif color == "red":
+    print("止まれ")
+else:
+    print("無効な色です")
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap3-4">
+                    <h1>3-4: forループとrange()</h1>
+                    <h2>決まった回数だけ繰り返す魔法</h2>
+                    <p>
+                        「同じ処理を100回繰り返したい」とき、同じコードを100行書くのは大変です。そんな時に使うのが「<strong>ループ</strong>」です。特に、繰り返す回数が決まっている場合に使うのが<strong><code>for</code>ループ</strong>です。
+                    </p>
+                    <p>
+                        <code>for</code>ループは、<code>range()</code>関数と組み合わせて使うのが基本です。
+                    </p>
+                    <pre><code># 0から4まで、5回繰り返す
+for i in range(5):
+    print(i, "回目のハロー！")
+
+# 出力:
+# 0 回目のハロー！
+# 1 回目のハロー！
+# 2 回目のハロー！
+# 3 回目のハロー！
+# 4 回目のハロー！
+</code></pre>
+                    <p>
+                        <code>range(N)</code>は<code>0, 1, 2, ..., N-1</code>という数の列を生成します。変数<code>i</code>には、その数が順番に代入されながら、ブロック内の処理が実行されていきます。
+                    </p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】九九の表（3の段）</h3>
+                    <blockquote>
+                        <code>for</code>ループを使って、九九の「3の段」の結果（3, 6, 9, ..., 27）を1行ずつ表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong> 1から9までの数を作るには<code>range(1, 10)</code>を使います。ループの中で、その数と3の積を計算します。</p>
+                        <pre><code>for i in range(1, 10):
+    print(3 * i)
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap3-5">
+                    <h1>3-5: whileループと制御</h1>
+                    <h2>条件が満たされる限り繰り返す</h2>
+                    <p>
+                        <code>for</code>ループが回数を指定するのに対し、<strong><code>while</code>ループ</strong>は「ある条件が真である限り、ずっと繰り返す」という処理です。
+                    </p>
+                    <pre><code># カウントダウン
+n = 5
+while n > 0:
+    print(n)
+    n = n - 1 # nを1減らす。これをしないと無限ループになる！
+print("発射！")
+</code></pre>
+                    <p><code>while</code>は意図せず無限にループしてしまう危険性があるため、条件を変える処理を忘れないよう注意が必要です。</p>
+
+                    <h2>ループの制御：`break` と `continue`</h2>
+                    <p>ループの途中で、処理を中断したり、スキップしたりできます。</p>
+                    <ul>
+                        <li><strong><code>break</code></strong>: ループを完全に中断し、ループの外に脱出します。</li>
+                        <li><strong><code>continue</code></strong>: その回の処理だけを中断し、次の回に進みます。</li>
+                    </ul>
+                    <pre><code># 1から10までで、5を見つけたら中断
+for i in range(1, 11):
+    if i == 5:
+        print("5を発見！ループを中断します。")
+        break
+    print(i) # 1, 2, 3, 4 が表示される
+
+# 1から10までで、偶数だけをスキップ
+for i in range(1, 11):
+    if i % 2 == 0:
+        continue
+    print(i) # 1, 3, 5, 7, 9 が表示される
+</code></pre>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】無限ループからの脱出</h3>
+                    <blockquote>
+                        <code>while True:</code>を使って無限ループを作り、ユーザーが "exit"
+                        と入力したら<code>break</code>でループを抜けるプログラムを作成してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>while True:
+    command = input("コマンドを入力してください: ")
+    if command == "exit":
+        print("終了します。")
+        break
+    print(command + " を実行しました。")
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="part3-ex">
+                    <h1>3-E: 部末演習</h1>
+                    <h2>流れを操る総力戦</h2>
+                    <p>
+                        第3部、お疲れ様でした！<code>if</code>による条件分岐と、<code>for</code>,
+                        <code>while</code>による繰り返し処理は、どんなプログラムにも登場する基本中の基本です。この演習で、それらを自在に組み合わせる練習をしましょう。
+                    </p>
+                    <hr>
+                    <h3>【演習問題1】FizzBuzz</h3>
+                    <blockquote>
+                        1から30までの整数を順番に表示します。ただし、その数が3の倍数なら数の代わりに"Fizz"を、5の倍数なら"Buzz"を、3と5の両方の倍数なら"FizzBuzz"を表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>思考プロセスと解答例</summary>
+                        <p><strong>考え方:</strong>
+                        <ol>
+                            <li>1から30までループする必要があるので<code>for i in range(1, 31):</code>を使います。</li>
+                            <li>各数値<code>i</code>に対して、条件を判定します。ここで重要なのは判定の順番です。「15の倍数」は「3の倍数」でも「5の倍数」でもあります。もし「3の倍数」の条件を先に判定してしまうと、15のときに"Fizz"と表示されてしまい、その後の"FizzBuzz"の判定が行われません。
+                            </li>
+                            <li>したがって、最も厳しい条件（3と5の両方の倍数）から順に判定していく必要があります。</li>
+                        </ol>
+                        </p>
+                        <pre><code>for i in range(1, 31):
+    if i % 15 == 0:
+        print("FizzBuzz")
+    elif i % 3 == 0:
+        print("Fizz")
+    elif i % 5 == 0:
+        print("Buzz")
+    else:
+        print(i)
+</code></pre>
+                    </details>
+                </div>
+
+                <!-- =============== 第4部：データを捌く =============== -->
+                <div class="page-content" id="chap4-1">
+                    <h1>4-1: リストの基本と応用（スライシング）</h1>
+                    <h2>たくさんのデータをいれる箱</h2>
+                    <p>
+                        これまでは1つの変数に1つのデータしか入れられませんでした。しかし、クラス全員のテストの点数のように、たくさんのデータをまとめて扱いたい場面は頻繁にあります。そんなときに使うのが「<strong>リスト</strong>」です。
+                    </p>
+                    <p>
+                        リストは <code>[]</code> （角括弧）で作り、各データは <code>,</code> （カンマ）で区切ります。
+                    </p>
+                    <pre><code>scores = [85, 92, 78, 65, 100]</code></pre>
+
+                    <h3>要素へのアクセス (0-indexed)</h3>
+                    <p>リストの中の個々のデータ（<strong>要素</strong>）には、インデックス（番号）でアクセスできます。<strong>超重要：インデックスは0から始まります！</strong></p>
+                    <pre><code>scores = [85, 92, 78, 65, 100]
+
+# 0番目（最初の要素）にアクセス
+print(scores[0]) # 85
+
+# 2番目（3番目の要素）にアクセス
+print(scores[2]) # 78
+</code></pre>
+
+                    <h3>リストの基本操作</h3>
+                    <ul>
+                        <li><strong><code>len(リスト)</code></strong>: リストの要素数を取得します。<code>len(scores)</code> は
+                            <code>5</code> です。
+                        </li>
+                        <li><strong><code>リスト.append(値)</code></strong>: リストの末尾に新しい要素を追加します。</li>
+                    </ul>
+                    <pre><code>numbers = [10, 20]
+print(len(numbers)) # 2
+
+numbers.append(30)
+print(numbers) # [10, 20, 30]
+</code></pre>
+
+                    <h3 style="margin-top: 40px;">リストを自在に切り分ける（スライシング）</h3>
+                    <p>
+                        リストの中から、特定の「一部分」だけを効率的に取り出したい場面はよくあります。例えば、「前から3つの要素」や「2番目から5番目まで」といった操作です。これを実現するのが<strong>スライシング</strong>です。
+                    </p>
+                    <p>
+                        スライシングは <code>リスト[開始:終了]</code> のようにコロン<code>:</code>を使って範囲を指定します。
+                    </p>
+                    <pre><code>letters = ['a', 'b', 'c', 'd', 'e', 'f']
+
+# 1番目から3番目の手前まで（インデックス1, 2）
+print(letters[1:3]) # ['b', 'c']
+
+# 最初から3番目の手前まで（インデックス0, 1, 2）
+print(letters[:3]) # ['a', 'b', 'c']
+
+# 3番目から最後まで
+print(letters[3:]) # ['d', 'e', 'f']
+</code></pre>
+                    <p><strong>重要ルール:</strong> 「開始」は含まれ、「終了」は含まれない（その手前まで）と覚えるのがポイントです。</p>
+
+                    <h4>ステップ数を指定する</h4>
+                    <p><code>[開始:終了:ステップ]</code> のように3つ目の値を指定すると、何個おきに要素を取り出すかを指定できます。</p>
+                    <pre><code>numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+# 1番目から8番目の手前まで、2つおきに
+print(numbers[1:8:2]) # [1, 3, 5, 7]
+
+# 全体を逆順にする（ステップに-1を指定）
+print(numbers[::-1]) # [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+</code></pre>
+                    <p>特に<code>[::-1]</code>でリストを簡単に逆順にできるのは、非常に便利なテクニックです。</p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】リストの作成と表示</h3>
+                    <blockquote>
+                        あなたの好きな食べ物を3つ入れたリスト<code>foods</code>を作成し、そのリスト全体を<code>print()</code>で表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>foods = ["ラーメン", "寿司", "焼肉"]
+print(foods)
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】リストの逆順</h3>
+                    <blockquote>
+                        <code>colors = ["red", "green", "blue"]</code>というリストがあります。スライシングを使って、このリストを逆順にした `["blue",
+                        "green", "red"]` を表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <pre><code>colors = ["red", "green", "blue"]
+print(colors[::-1])
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題3】リストの先頭と末尾</h3>
+                    <blockquote>
+                        <code>numbers = [1, 2, 3, 4, 5]</code> というリストがあります。スライシングを使って、先頭の要素を除いたリスト `[2, 3, 4, 5]`
+                        と、末尾の要素を除いたリスト `[1, 2, 3, 4]` をそれぞれ表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>numbers = [1, 2, 3, 4, 5]
+# 先頭を除外
+print(numbers[1:])
+# 末尾を除外
+print(numbers[:-1])
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap4-2">
+                    <h1>4-2: リストとループ</h1>
+                    <h2>リストの全要素を自動で処理する</h2>
+                    <p>
+                        リストの真の力は、ループと組み合わせることで発揮されます。リストの全要素に対して、同じ処理を自動的に行うことができます。
+                    </p>
+                    <pre><code>scores = [85, 92, 78]
+total = 0
+
+for s in scores:
+    print(s, "点を加算します")
+    total += s
+
+print("合計点:", total)
+</code></pre>
+                    <p>
+                        <code>for 変数 in リスト:</code>という構文を使うと、リストの要素が先頭から順番に変数に代入され、その数だけループが実行されます。
+                    </p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】リストの全要素を表示</h3>
+                    <blockquote>
+                        <code>items = ["剣", "盾", "薬草"]</code>というリストがあります。<code>for</code>ループを使って、各アイテムを1行ずつ表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>items = ["剣", "盾", "薬草"]
+for item in items:
+    print(item)
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】条件に合うものだけ表示</h3>
+                    <blockquote>
+                        <code>scores = [55, 80, 62, 95, 48]</code>という点数リストがあります。この中から、60点以上の「合格点」だけを表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong> ループの中で<code>if</code>文を使い、条件を満たす要素だけを<code>print()</code>します。</p>
+                        <pre><code>scores = [55, 80, 62, 95, 48]
+for score in scores:
+    if score >= 60:
+        print(score)
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap4-3">
+                    <h1>4-3: 複数データの入力</h1>
+                    <h2>スペース区切りの入力をリストへ</h2>
+                    <p>
+                        競技プログラミングでは、「N個の整数が1行にスペース区切りで与えられます」という形式の入力が非常に多いです。これを効率よくリストに変換する魔法の呪文を覚えましょう。
+                    </p>
+                    <pre><code># 入力例: 10 20 30 40 50
+
+A = list(map(int, input().split()))
+
+print(A) # [10, 20, 30, 40, 50]
+</code></pre>
+
+                    <h3>呪文の分解</h3>
+                    <ol>
+                        <li><strong><code>input()</code></strong>: まずは一行 "10 20 30 40 50"
+                            を<strong>文字列</strong>として受け取ります。</li>
+                        <li><strong><code>.split()</code></strong>: その文字列をスペースで分割し、文字列のリスト
+                            <code>['10', '20', '30', '40', '50']</code> を作ります。
+                        </li>
+                        <li><strong><code>map(int, ...)</code></strong>:
+                            リストの各要素（'10'や'20'）すべてに<code>int()</code>関数を適用（写像）し、数値に変換する準備をします。</li>
+                        <li><strong><code>list(...)</code></strong>: 最後に<code>map</code>の結果をリストに変換します。</li>
+                    </ol>
+                    <p>この <code>list(map(int, input().split()))</code> は、息をするように書けるようになりたい頻出テクニックです。</p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】入力された数値の合計</h3>
+                    <blockquote>
+                        スペースで区切られた複数の整数が1行で与えられます。これらの整数の合計値を計算して表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong>
+                            まずリストとして受け取り、その後にループで合計を計算します。Pythonにはリストの合計を計算する便利な<code>sum()</code>関数もあります。</p>
+                        <pre><code>A = list(map(int, input().split()))
+print(sum(A))
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap4-4">
+                    <h1>4-4: 辞書</h1>
+                    <h2>キーと値のペアでデータを管理する</h2>
+                    <p>
+                        リストはインデックス（番号）でデータを探しましたが、<strong>辞書（dict）</strong>は<strong>キー（Key）</strong>と呼ばれる名前でデータ（<strong>値:
+                            Value</strong>）を探します。電話帳で名前（キー）から電話番号（値）を探すのに似ています。
+                    </p>
+                    <p>辞書は <code>{}</code>（波括弧）で作り、<code>キー: 値</code>のペアを<code>,</code>で区切ります。</p>
+                    <pre><code># 辞書の作成
+fruits_prices = {"apple": 150, "banana": 100}
+
+# キーを使って値を取得
+print(fruits_prices["apple"]) # 150
+
+# 新しいペアを追加
+fruits_prices["orange"] = 120
+
+# 値を更新
+fruits_prices["apple"] = 140
+
+print(fruits_prices)
+# {'apple': 140, 'banana': 100, 'orange': 120}
+</code></pre>
+                    <p>辞書は、何かの出現回数を数えるときや、名前とパラメータを紐づけて管理したいときに非常に便利です。</p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】テストの点数</h3>
+                    <blockquote>
+                        "Tanaka"が80点、"Suzuki"が92点のテスト結果を辞書<code>scores</code>に格納し、Suzukiさんの点数を表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>scores = {"Tanaka": 80, "Suzuki": 92}
+print(scores["Suzuki"])
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap4-5">
+                    <h1>4-5: セットとタプル</h1>
+                    <h2>リストの特殊な仲間たち</h2>
+                    <p>リストや辞書の他に、特定の状況で役立つ特殊なデータ構造があります。</p>
+
+                    <h3>セット (set): 重複しない要素の集まり</h3>
+                    <p>「<strong>セット</strong>」は、重複する値を持たず、順序のないデータの集まりです。自動的に重複を消してくれる性質と、「ある要素が含まれているか」のチェックがリストよりずっと高速である、という特徴があります。
+                    </p>
+                    <pre><code># リストからセットを作成すると重複が消える
+numbers = [1, 2, 2, 3, 1, 4]
+unique_numbers = set(numbers)
+print(unique_numbers) # {1, 2, 3, 4} （順序は保証されない）
+
+# 高速な存在チェック
+print(3 in unique_numbers) # True
+</code></pre>
+
+                    <h3>タプル (tuple): 変更できないリスト</h3>
+                    <p>「<strong>タプル</strong>」は、基本的な性質はリストと似ていますが、一度作成したら中身を<strong>変更できない（イミュータブル）</strong>という大きな特徴があります。<code>()</code>（丸括弧）で作ります。
+                    </p>
+                    <pre><code>point = (10, 20)
+print(point[0]) # 10
+
+# point[0] = 30 # これはエラーになる！
+</code></pre>
+                    <p>プログラムの中で「この値は絶対に変わらない」ということを明示したい場合や、辞書のキーとして使いたい場合（リストはキーにできない）などに使います。</p>
+                </div>
+
+                <div class="page-content" id="chap4-6">
+                    <h1>4-6: 文字列の応用と正規表現</h1>
+                    <h2>複雑な文字列パターンを扱う魔法</h2>
+                    <p>
+                        「この文字列は、メールアドレスの形式になっているか？」「大量のテキストから、電話番号だけをすべて抜き出したい」——このような、単純な文字列検索では対応できない「パターンの検索」を行うための超強力なツールが<strong>正規表現</strong>です。
+                    </p>
+                    <p>
+                        Pythonでは、<code>re</code>モジュールをインポートして使います。
+                    </p>
+                    <h3>基本的な使い方</h3>
+                    <ul>
+                        <li><strong><code>re.search(パターン, 文字列)</code></strong>: 文字列の中からパターンに一致する最初の場所を探す。</li>
+                        <li><strong><code>re.findall(パターン, 文字列)</code></strong>: パターンに一致する全ての箇所をリストとして返す。</li>
+                        <li><strong><code>re.sub(パターン, 置換後, 文字列)</code></strong>: パターンに一致する箇所を別の文字列に置換する。</li>
+                    </ul>
+                    <h3>メタ文字：特別な意味を持つ文字</h3>
+                    <p>正規表現の強力さは、以下の「メタ文字」を組み合わせることで発揮されます。</p>
+                    <ul>
+                        <li><code>.</code> : 任意の一文字</li>
+                        <li><code>*</code> : 直前の文字の0回以上の繰り返し</li>
+                        <li><code>+</code> : 直前の文字の1回以上の繰り返し</li>
+                        <li><code>\d</code>: 任意の数字 (<code>[0-9]</code>と同じ)</li>
+                        <li><code>\w</code>: 任意の英数字とアンダースコア (<code>[a-zA-Z0-9_]</code>と同じ)</li>
+                        <li><code>[]</code>: `[abc]`はaかbかcのいずれか1文字</li>
+                        <li><code>^</code>: 行の先頭 (<code>re.MULTILINE</code>がない場合は文字列の先頭)</li>
+                        <li><code>$</code>: 行の末尾 (<code>re.MULTILINE</code>がない場合は文字列の末尾)</li>
+                    </ul>
+                    <pre><code>import re
+
+text = "私の電話番号は012-345-6789で、メールはtest@example.comです。"
+
+# 3桁-3桁-4桁の数字のパターン
+# r'' はエスケープシーケンスを無効化するraw文字列。正規表現で推奨される
+phone_pattern = r'\d{3}-\d{4}-\d{4}' # \d{n}は直前の\dがn回繰り返す意味
+match = re.search(phone_pattern, text)
+if match:
+    print("電話番号が見つかりました:", match.group(0))
+
+# メールアドレスの簡易的なパターン
+email_pattern = r'\w+@\w+\.\w+'
+all_emails = re.findall(email_pattern, text)
+print("メールアドレスのリスト:", all_emails)
+</code></pre>
+                    <p>正規表現は非常に奥が深いですが、基本的なパターンを知っているだけで、特定の文字列処理問題で無類の強さを発揮します。</p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】YYYY-MM-DD形式</h3>
+                    <blockquote>
+                        文字列 `text = "Today is 2023-10-26."` から、正規表現を使って日付の部分だけを抜き出してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>import re
+text = "Today is 2023-10-26."
+pattern = r'\d{4}-\d{2}-\d{2}'
+match = re.search(pattern, text)
+if match:
+    print(match.group(0))
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】不要な文字の削除</h3>
+                    <blockquote>
+                        文字列 `price_text = "定価: 1,980円 (税込)"` から、数字以外の文字をすべて削除して、"1980" という文字列を得てください。
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong> <code>\D</code> というメタ文字は「数字以外の任意の1文字」を表します。これを `re.sub()` で空文字列に置換します。
+                        </p>
+                        <pre><code>import re
+price_text = "定価: 1,980円 (税込)"
+pattern = r'\D' # 数字以外
+result = re.sub(pattern, '', price_text)
+print(result) # 1980
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap4-7">
+                    <h1>4-7: 問題の読み解き方</h1>
+                    <h2>プログラムを作る前の「設計図」</h2>
+                    <p>
+                        いよいよ基本的な部品が揃ってきました。ここからは、部品を組み合わせて「プログラム」という家を建てるフェーズに入ります。その前に、家の設計図にあたる「問題文」を正確に読み解くトレーニングをしましょう。
+                    </p>
+                    <p>
+                        どんなに複雑な問題でも、以下の4つの要素に分解して考える癖をつけることが重要です。
+                    </p>
+                    <ol>
+                        <li><strong>入力 (Input):</strong> プログラムは何を情報として受け取る必要があるか？（個数、数値、文字列など）</li>
+                        <li><strong>出力 (Output):</strong> プログラムは何を計算して、最終的に何を表示すればよいか？（"Yes/No", 数値, 文字列など）</li>
+                        <li><strong>制約 (Constraints):</strong> 入力される数値の範囲はどれくらいか？（これが後の計算量考察で重要になる）</li>
+                        <li><strong>サンプル (Sample):</strong> なぜこの入力でこの出力になるのか？問題のルールを具体的に理解する最大のヒント。</li>
+                    </ol>
+                    <p>
+                        この4つの要素を、問題文を読むたびに頭の中で整理することで、自分が何を作るべきかが明確になります。これは、競技プログラミングだけでなく、あらゆるプログラミングにおいて最も重要なスキルの一つです。
+                    </p>
+                </div>
+
+                <div class="page-content" id="part4-ex">
+                    <h1>4-E: 部末演習</h1>
+                    <h2>データ構造を使いこなす</h2>
+                    <p>
+                        第4部、お疲れ様でした！リスト、辞書、セットといったデータ構造と、それらを操作する応用技術を学びましたね。この演習では、問題の性質に合わせて、どのデータ構造を使えば効率的に解けるかを考える練習をします。
+                    </p>
+                    <hr>
+                    <h3>【演習問題1】カードの枚数</h3>
+                    <blockquote>
+                        N枚のカードがあり、それぞれのカードには整数A<sub>i</sub>が書かれています。数字が書かれたカードがそれぞれ何枚ずつあるか、数字の小さい順に表示してください。
+                    </blockquote>
+                    <p><strong>入力例:</strong><br>
+                        7<br>
+                        3 1 4 1 5 9 2
+                    </p>
+                    <p><strong>出力例:</strong><br>
+                        1: 2枚<br>
+                        2: 1枚<br>
+                        3: 1枚<br>
+                        4: 1枚<br>
+                        5: 1枚<br>
+                        9: 1枚
+                    </p>
+                    <details>
+                        <summary>思考プロセスと解答例</summary>
+                        <p><strong>考え方:</strong>
+                        <ol>
+                            <li>各数字の出現回数を数える必要があるので、<strong>辞書</strong>が適しています。</li>
+                            <li>入力の数値をループで回し、辞書のキーを数値、値を出現回数として記録します。<code>counts[num] = counts.get(num, 0) + 1</code>というテクニックが便利です。
+                            </li>
+                            <li>辞書のキーをソートして、順番に結果を表示します。</li>
+                        </ol>
+                        </p>
+                        <pre><code>N = int(input())
+A = list(map(int, input().split()))
+
+counts = {}
+for num in A:
+    counts[num] = counts.get(num, 0) + 1
+
+# キーでソートして出力
+for num in sorted(counts.keys()):
+    print(f"{num}: {counts[num]}枚")
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="challenge4">
+                    <h1>挑戦：Dランク問題</h1>
+                    <p>
+                        おめでとうございます！あなたは、プログラミングの基本的な読み書きと、複数のデータを扱うための道具を手に入れました。
+                        これは、Paizaスキルチェックの「Dランク」相当の問題に挑戦できるレベルです。
+                    </p>
+                    <p>
+                        Dランク問題は、まさにこの第4部までに学んだ「リストへの入出力」や「ループ」「条件分岐」を正確に実装できるかを問う問題が多く出題されます。
+                        ぜひ、力試しに挑戦してみてください！
+                    </p>
+                    <ul>
+                        <li><b>挑戦のリンク: <a
+                                    href="https://paiza.jp/works/mondai/d_rank_level_up_problems/d_rank_level_up_problems__stdin_1"
+                                    target="_blank">Paiza Dランクレベルアップ問題集</a></b></li>
+                        <li><b>ヒント：</b>第2部、第4部の知識が特に役立ちます。</li>
+                    </ul>
+
+                    <p>
+                        また、AtCoderのA問題も、このレベルの知識で解けるものがたくさんあります。
+                    </p>
+                    <ul>
+                        <li><b>挑戦のリンク: <a href="https://atcoder.jp/contests/abs/tasks/abc081_a" target="_blank">AtCoder
+                                    ABC081 A - Placing Marbles</a></b></li>
+                        <li><b>ヒント：</b>第2部で学んだ文字列の扱い方が鍵です。</li>
+                    </ul>
+                </div>
+
+                <!-- =============== 第5部：高速化の作法 =============== -->
+                <div class="page-content" id="chap5-1">
+                    <h1>5-1: 計算量とオーダー記法</h1>
+                    <h2>なぜ「速いコード」が必要なのか？</h2>
+                    <p>
+                        あなたは宝の地図を手に入れました。宝箱は100万個の部屋のどこかに隠されています。
+                    </p>
+                    <ul>
+                        <li><strong>凡人の探し方:</strong> 1号室から順に、100万号室までドアを一つずつ開けて探す。最悪の場合、100万回ドアを開ける必要があります。</li>
+                        <li><strong>賢者の探し方:</strong>
+                            地図には「宝は50万号室より大きい部屋にある」といったヒントが書かれています。まず50万号室を調べ、そこから範囲を半分に絞り…と繰り返します。この方法なら、たった20回ほどで宝を見つけられます。
+                        </li>
+                    </ul>
+                    <p>
+                        競技プログラミングの「制限時間」は、まさにこの状況と同じです。「凡人の探し方」をするコードは時間切れ（<strong>Time Limit Exceeded,
+                            TLE</strong>）になり、「賢者の探し方」をするコードだけが正解（<strong>Accepted,
+                            AC</strong>）を得られます。この「コードの効率の良さ」を示す指標が「<strong>計算量</strong>」です。
+                    </p>
+                    <h2>オーダー記法：コードの戦闘力</h2>
+                    <p>
+                        計算量とは、入力サイズNが大きくなったときに、計算回数がどれくらいの勢いで増えるかを示すものです。これをざっくりと表現する方法が「<strong>オーダー記法（O記法）</strong>」です。
+                    </p>
+                    <table border="1" style="border-collapse: collapse; width: 100%;">
+                        <tr style="background-color: #f2f2f2;">
+                            <th>オーダー</th>
+                            <th>名称</th>
+                            <th>N=10<sup>5</sup> で間に合うか</th>
+                            <th>コード例</th>
+                        </tr>
+                        <tr>
+                            <td><code>O(1)</code></td>
+                            <td>定数時間</td>
+                            <td style="color: green;">◎ 余裕</td>
+                            <td><code>a + b</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>O(log N)</code></td>
+                            <td>対数時間</td>
+                            <td style="color: green;">◎ 余裕</td>
+                            <td>二分探索</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(N)</code></td>
+                            <td>線形時間</td>
+                            <td style="color: green;">◎ 余裕</td>
+                            <td><code>for i in range(N): ...</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>O(N log N)</code></td>
+                            <td>対数線形時間</td>
+                            <td style="color: green;">○ 間に合う</td>
+                            <td>高速なソート</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(N<sup>2</sup>)</code></td>
+                            <td>二乗時間</td>
+                            <td style="color: orange;">△ N=2000程度が限界</td>
+                            <td>二重ループ</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(N<sup>3</sup>)</code></td>
+                            <td>三乗時間</td>
+                            <td style="color: red;">× N=300程度が限界</td>
+                            <td>三重ループ</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(2<sup>N</sup>)</code></td>
+                            <td>指数時間</td>
+                            <td style="color: red;">× N=20程度が限界</td>
+                            <td>bit全探索</td>
+                        </tr>
+                    </table>
+                    <p>一般的な競技プログラミングサイトの制限時間は2秒で、1秒あたり約10<sup>8</sup>回の計算が目安です。問題の制約を見て、どの計算量まで許されるかを見積もるのが、アルゴリズム選定の第一歩です。
+                    </p>
+                </div>
+
+                <div class="page-content" id="chap5-2">
+                    <h1>5-2: 高速な入出力 (sys.stdin.readline)</h1>
+                    <h2>入力がボトルネックになる時</h2>
+                    <p>
+                        Nが10<sup>5</sup>のように非常に大きい問題では、<code>input()</code>でN行のデータを読み込むだけで、かなりの時間がかかってしまうことがあります。これは、<code>input()</code>が毎回丁寧に行の読み込みと解釈を行うためです。
+                    </p>
+                    <p>
+                        このような入力がボトルネックになるケースで威力を発揮するのが、<code>sys</code>モジュールの<code>stdin.readline</code>です。これは、より低レベルで高速な入力読み込み機能を提供します。
+                    </p>
+                    <h3>使い方：おまじないのコード</h3>
+                    <p>
+                        競技プログラミングでは、以下のコードをプログラムの冒頭に書くのが定石です。これにより、<code>input()</code>と同じ感覚で高速な入力が使えるようになります。
+                    </p>
+                    <pre><code>import sys
+input = sys.stdin.readline
+
+# あとはいつも通り input() を使うだけ
+N = int(input())
+S = input().strip() # ← strip() が重要！
+</code></pre>
+                    <p><strong>超重要：</strong>
+                        <code>sys.stdin.readline()</code>は、行末の改行文字(<code>\n</code>)をそのまま含んで読み込みます。そのため、文字列として使う場合は必ず<code>.strip()</code>を付けて改行文字を削除する癖をつけましょう。<code>int()</code>で変換する場合は不要です。
+                    </p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】大量の数値入力</h3>
+                    <blockquote>
+                        1行目にNが与えられ、続くN行に整数A<sub>i</sub>が与えられます。高速な入力を使って、これらの数値をすべてリストに格納してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>import sys
+input = sys.stdin.readline
+
+N = int(input())
+A = []
+for _ in range(N):
+    A.append(int(input()))
+
+# print(A) # 確認用
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap5-3">
+                    <h1>5-3: リスト内包表記</h1>
+                    <h2>Pythonらしいエレガントなリスト作成</h2>
+                    <p>
+                        forループを使って、ある条件を満たす要素や、各要素を加工した結果を新しいリストに格納することは頻繁にあります。
+                    </p>
+                    <pre><code># 0から9までの2乗の数をリストにしたい
+squares = []
+for i in range(10):
+    squares.append(i**2)
+</code></pre>
+                    <p>
+                        この処理を、より簡潔に、そして多くの場合でより高速に記述できるのが<strong>リスト内包表記</strong>です。
+                    </p>
+                    <pre><code># 上の4行が、この1行になる
+squares = [i**2 for i in range(10)]
+print(squares) # [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+</code></pre>
+                    <h3>ifを使ったフィルタリング</h3>
+                    <p>リスト内包表記には、if文を組み合わせて、条件を満たす要素だけをリストに含めることもできます。</p>
+                    <pre><code># 1から20までの偶数だけをリストにしたい
+evens = [i for i in range(1, 21) if i % 2 == 0]
+print(evens) # [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+</code></pre>
+                    <p>リスト内包表記は、Pythonのコードを劇的に読みやすく、かつ効率的にするための非常に重要な機能です。積極的に使っていきましょう。</p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】文字列リストの作成</h3>
+                    <blockquote>
+                        リスト `words = ["apple", "banana", "cherry"]` があります。リスト内包表記を使って、各単語の長さを要素とする新しいリスト `lengths`
+                        を作成してください。期待する出力: `[5, 6, 6]`
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>words = ["apple", "banana", "cherry"]
+lengths = [len(w) for w in words]
+print(lengths)
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】条件付き加工</h3>
+                    <blockquote>
+                        リスト `numbers = [1, 2, 3, 4, 5, 6]` があります。このリストの要素のうち、奇数だけを2倍した新しいリストを作成してください。期待する出力: `[2, 6,
+                        10]`
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>numbers = [1, 2, 3, 4, 5, 6]
+result = [n * 2 for n in numbers if n % 2 != 0]
+print(result)
+</code></pre>
+                    </details>
+                </div>
+
+
+                <div class="page-content" id="chap5-4">
+                    <h1>5-4: deque (高速な両端キュー)</h1>
+                    <h2>リストの弱点を克服する</h2>
+                    <p>
+                        Pythonのリストは、末尾への追加 (<code>append</code>) や取り出し (<code>pop</code>) は高速(O(1))です。しかし、<strong>先頭への追加
+                            (<code>insert(0, ...)</code>) や取り出し (<code>pop(0)</code>)
+                            は、全要素をずらす必要があるため非常に遅い(O(N))</strong>という弱点があります。
+                    </p>
+                    <p>
+                        この弱点を克服したのが <code>collections.deque</code> (デックと読みます)
+                        です。dequeは「両端が開いた筒」のようなイメージで、<strong>先頭からも末尾からも、高速 (<code>O(1)</code>) に要素を追加・削除できます。</strong>
+                    </p>
+                    <pre><code>from collections import deque
+
+d = deque([1, 2, 3])
+print(d)
+
+d.append(4)     # 末尾に追加
+print(d)        # deque([1, 2, 3, 4])
+
+d.appendleft(0) # 先頭に追加
+print(d)        # deque([0, 1, 2, 3, 4])
+
+d.pop()         # 末尾から取り出し
+print(d)        # deque([0, 1, 2, 3])
+
+d.popleft()     # 先頭から取り出し
+print(d)        # deque([1, 2, 3])
+</code></pre>
+                    <p>後の章で学ぶ「幅優先探索(BFS)」など、キュー（先入れ先出しのデータ構造）を扱う場面で絶大な威力を発揮します。</p>
+                </div>
+
+                <div class="page-content" id="chap5-5">
+                    <h1>5-5: Counter (自動集計ツール)</h1>
+                    <h2>数え上げのスペシャリスト</h2>
+                    <p>
+                        「リストや文字列の中に、各要素が何個ずつあるか数えたい」<br>
+                        これを自力でやると辞書を用意してループを回す必要がありますが、そんな「数え上げ」作業を一瞬で終わらせてくれるのが <code>collections.Counter</code> です。
+                    </p>
+                    <pre><code>from collections import Counter
+
+S = "abracadabra"
+C = Counter(S)
+
+print(C)
+# 出力: Counter({'a': 5, 'b': 2, 'r': 2, 'c': 1, 'd': 1})
+
+# 特定の要素の数も簡単に取り出せる
+print(C['a']) # 5
+print(C['z']) # 存在しないキーでもエラーにならず0が返る
+
+# most_common(k)で出現頻度上位k個を(要素, 回数)のリストで取得
+print(C.most_common(2)) # [('a', 5), ('b', 2)]
+</code></pre>
+                    <p>集計系の問題では、まず <code>Counter</code> が使えないか考えてみましょう。</p>
+                </div>
+
+                <div class="page-content" id="chap5-6">
+                    <h1>5-6: itertools (順列・組み合わせの達人)</h1>
+                    <h2>全探索をシンプルに書く</h2>
+                    <p>
+                        「リストの要素から3つ選ぶ全ての組み合わせを試したい…」<br>
+                        これを多重ループで書くのは大変ですが、 <code>itertools</code> を使えば、組み合わせや順列を簡単に生成できます。
+                    </p>
+                    <ul>
+                        <li><strong><code>permutations(リスト, 個数)</code></strong>: 順列（順番を考慮する）を列挙</li>
+                        <li><strong><code>combinations(リスト, 個数)</code></strong>: 組み合わせ（順番を考慮しない）を列挙</li>
+                    </ul>
+                    <pre><code>import itertools
+my_list = [1, 2, 3]
+
+# 3つの要素から2つを選ぶ「順列」
+print("--- 順列 ---")
+for p in itertools.permutations(my_list, 2):
+    print(p, end=" ") # (1, 2) (1, 3) (2, 1) (2, 3) (3, 1) (3, 2) 
+
+print("\n")
+
+# 3つの要素から2つを選ぶ「組み合わせ」
+print("--- 組み合わせ ---")
+for c in itertools.combinations(my_list, 2):
+    print(c, end=" ") # (1, 2) (1, 3) (2, 3)
+</code></pre>
+                    <p>後の章で学ぶ「全探索」系の問題で絶大な威力を発揮します。</p>
+                </div>
+
+                <div class="page-content" id="part5-ex">
+                    <h1>5-E: 部末演習</h1>
+                    <h2>作法と武器を手に、実践へ</h2>
+                    <p>
+                        第5部、お疲れ様でした！コードの効率を測る「計算量」という視点と、それを改善するためのPythonの強力な武器を学びました。この演習で、それらを使いこなす感覚を養いましょう。
+                    </p>
+                    <hr>
+                    <h3>【演習問題】アナグラム判定</h3>
+                    <blockquote>
+                        2つの文字列SとTが与えられます。TがSのアナグラム（文字の種類と数が同じで、並びだけが違う）になっているかどうかを判定してください。
+                    </blockquote>
+                    <details>
+                        <summary>思考プロセスと解答例</summary>
+                        <p><strong>考え方:</strong>
+                        <ol>
+                            <li>アナグラムとは、「使われている文字の種類と数が完全に一致する」ということです。</li>
+                            <li>ということは、各文字列について「どの文字が何個使われているか」を数え上げ、その結果が2つの文字列で一致すればOKです。</li>
+                            <li>この「数え上げ」に最適な武器は、まさに<code>collections.Counter</code>です。</li>
+                        </ol>
+                        </p>
+                        <pre><code>from collections import Counter
+
+S = input()
+T = input()
+
+# Counterオブジェクトをそれぞれ作成
+s_counts = Counter(S)
+t_counts = Counter(T)
+
+# Counterオブジェクト同士を比較するだけ！
+if s_counts == t_counts:
+    print("Yes")
+else:
+    print("No")
+
+# 別解：ソートして比較する (O(N log N))
+# if sorted(S) == sorted(T):
+#     print("Yes")
+# else:
+#     print("No")
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="challenge5">
+                    <h1>挑戦：Cランク & AtCoder(B)</h1>
+                    <p>
+                        おめでとうございます！計算量という概念を学び、Pythonの便利なライブラリという武器を手に入れたあなたは、Paizaスキルチェックの「Cランク」やAtCoderのB問題に挑戦する準備が整いました。
+                    </p>
+                    <p>
+                        このレベルの問題は、単純なループでは時間切れになるような制約が設定されていることが多く、「いかに効率的なデータ構造を選ぶか」「便利なライブラリを知っているか」が問われます。
+                    </p>
+                    <ul>
+                        <li><b>挑戦のリンク: <a
+                                    href="https://paiza.jp/works/mondai/c_rank_level_up_problems/c_rank_string_step1"
+                                    target="_blank">Paiza Cランクレベルアップ問題集（文字列処理）</a></b></li>
+                        <li><b>ヒント：</b>第4部、第5部で学んだデータ構造やライブラリが役立ちます。</li>
+                    </ul>
+                    <ul>
+                        <li><b>挑戦のリンク: <a href="https://atcoder.jp/contests/abc081/tasks/arc086_a"
+                                    target="_blank">AtCoder ABC081 C - Not so Diverse</a></b></li>
+                        <li><b>ヒント：</b>第5-5章 `Counter`の知識が鍵を握ります。種類を減らすには、出現回数が少ないものから取り除いていくのが最適です。</li>
+                    </ul>
+                </div>
+
+                <!-- =============== 第6部：探索アルゴリズム =============== -->
+                <div class="page-content" id="chap6-1">
+                    <h1>6-1: 全探索</h1>
+                    <h2>アルゴリズムの原点にして頂点</h2>
+                    <p>
+                        <strong>全探索</strong>とは、その名の通り「<strong>考えられるすべてのパターンを、文字通り全部試す</strong>」という、最もシンプルで最も強力なアルゴリズムの考え方です。
+                    </p>
+                    <p>
+                        複雑なアルゴリズムを知らなくても、全探索で解ける問題は非常に多いです。まずは「全部試せば答えは出るんじゃないか？」と考えるのが、問題解決の第一歩です。
+                    </p>
+
+                    <h2>どんな時に使える？</h2>
+                    <p>
+                        全探索が使えるのは、試すべきパターンの総数が、計算量の限界（だいたい10<sup>7</sup>〜10<sup>8</sup>回程度）に収まるときです。問題の制約を見て、全探索で間に合うかを見極めるのが重要です。
+                    </p>
+                    <ul>
+                        <li><strong>Nが10〜20程度</strong> → O(N<sup>2</sup>)やO(N<sup>3</sup>)のループでも間に合うかも？</li>
+                        <li><strong>Nが20前後</strong> → O(2<sup>N</sup>) のbit全探索が使えるかも？</li>
+                        <li><strong>Nが100以上</strong> → 単純な全探索はほぼ無理。別のアルゴリズムを考える。</li>
+                    </ul>
+
+                    <h3>bit全探索：選ぶか、選ばないか</h3>
+                    <p>
+                        「N個の品物それぞれについて、選ぶか選ばないかの2択をすべて試す」ような場面で使います。選び方は2<sup>N</sup>通りあり、これを2進数で表現して全探索します。
+                    </p>
+                    <pre><code>N = 3
+items = ["A", "B", "C"]
+
+# 0から7 (2**3 - 1) までループ
+for i in range(1 << N): # 1 << N は 2**N と同じ
+    selected = []
+    for j in range(N):
+        # i の jビット目が1かどうかをチェック
+        if (i >> j) & 1:
+            selected.append(items[j])
+    print(i, ":", selected)
+</code></pre>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】3つのサイコロ</h3>
+                    <blockquote>
+                        3つの6面サイコロを振ったとき、出目の合計が10になる組み合わせは何通りありますか？三重ループを使って全探索で求めてください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>count = 0
+for i in range(1, 7):
+    for j in range(1, 7):
+        for k in range(1, 7):
+            if i + j + k == 10:
+                count += 1
+print(count)
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap6-2">
+                    <h1>6-2: 二分探索</h1>
+                    <h2>「賢い絞り込み」の技術</h2>
+                    <p>
+                        本棚に<strong>アルファベット順に並んだ</strong>1000冊の本があります。この中から「Python」というタイトルの本を探してください。
+                    </p>
+                    <p>
+                        まさか先頭から1冊ずつ探したりはしませんよね？<br>
+                        普通は、まず真ん中あたりを手に取り、例えば「Java」だったら、探している「Python」はもっと後ろにあるはずなので、棚の後半部分に的を絞ります。そしてまたその真ん中を手に取り…と繰り返すはずです。
+                    </p>
+                    <p>
+                        この「<strong>探索範囲を毎回半分に絞っていく</strong>」賢い方法が<strong>二分探索（Binary Search）</strong>です。
+                    </p>
+                    <h2>絶対条件：データがソート済みであること</h2>
+                    <p>
+                        二分探索が使えるのは、データが<strong>必ずソート済み（小さい順 or 大きい順に並んでいる）</strong>の場合に限られます。計算量は驚異的な <strong>O(log
+                            N)</strong> になります。
+                    </p>
+                    <h2>実装：`bisect`ライブラリ</h2>
+                    <p>Pythonには二分探索を簡単に行うための<code>bisect</code>という便利なライブラリがあります。</p>
+                    <pre><code>import bisect
+sorted_list = [10, 20, 30, 40, 50]
+idx = bisect.bisect_left(sorted_list, 35)
+print(idx) # 3
+</code></pre>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】特定のマシンの検索</h3>
+                    <blockquote>
+                        性能値がソートされたリスト <code>machines = [100, 150, 200, 250, 300]</code>
+                        があります。性能値が200のマシンがリストの何番目（0-indexed）にあるか、<code>bisect_left</code>を使って調べてください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>import bisect
+machines = [100, 150, 200, 250, 300]
+idx = bisect.bisect_left(machines, 200)
+print(idx) # 2
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap6-3">
+                    <h1>6-3: 再帰関数</h1>
+                    <h2>自分を呼び出す、不思議な関数</h2>
+                    <p>
+                        <strong>再帰関数</strong>とは、マトリョーシカ人形のように、「<strong>関数の中で自分自身の関数を呼び出す</strong>」構造を持った関数です。大きな問題を、同じ構造を持つ小さな問題に分解して解いていく、というアプローチで非常に強力です。
+                    </p>
+                    <h2>例：階乗の計算</h2>
+                    <p>
+                        5の階乗 (5!) は <code>5 * (4の階乗)</code> と考えられます。
+                    </p>
+                    <pre><code>def factorial(n):
+    # ベースケース（一番小さい問題の答え）
+    if n == 0:
+        return 1
+    # 再帰的ステップ（より小さい問題に分解）
+    else:
+        return n * factorial(n - 1)
+
+print(factorial(5)) # 120
+</code></pre>
+                    <h2>絶対に忘れてはいけない「ベースケース」</h2>
+                    <p>
+                        再帰関数には、必ず「これ以上分解できない最小の問題の答え」である<strong>ベースケース（終了条件）</strong>が必要です。これがないと無限に自分を呼び出し続け、エラーになってしまいます。
+                    </p>
+                </div>
+
+                <div class="page-content" id="chap6-4">
+                    <h1>6-4: 深さ優先探索(DFS)</h1>
+                    <h2>「行けるところまで行く」迷路探索</h2>
+                    <p>
+                        <strong>深さ優先探索（Depth First Search,
+                            DFS）</strong>は、「まず一つの道を深く、行けるところまで進み、行き止まったら戻って別の道を試す」という探索方法です。
+                    </p>
+                    <p>実装には、前章で学んだ<strong>再帰関数</strong>を使うのが非常に直感的です。</p>
+                    <pre><code># graph[i] は、地点iから行ける地点のリスト
+graph = { 'A': ['B', 'C'], 'B': ['D', 'E'], 'C': ['F'], 'D': [], 'E': ['F'], 'F': [] }
+visited = set()
+
+def dfs(node):
+    visited.add(node)
+    print(node, end=' ')
+    for neighbor in graph[node]:
+        if neighbor not in visited:
+            dfs(neighbor)
+
+dfs('A') # A B D E F C 
+</code></pre>
+                    <p>DFSは、グラフの連結判定や、全ての経路の列挙といった問題で威力を発揮します。</p>
+                </div>
+
+                <div class="page-content" id="chap6-5">
+                    <h1>6-5: 幅優先探索(BFS)</h1>
+                    <h2>「近い順に調べる」波紋の探索</h2>
+                    <p>
+                        <strong>幅優先探索（Breadth First Search,
+                            BFS）</strong>は、池の波紋のように、「<strong>スタート地点から近い順に、全方位をくまなく探索していく</strong>」手法です。
+                    </p>
+                    <p>
+                        BFSの最大の特徴は、「<strong>辺の重みが全て同じグラフ</strong>」において、ゴールにたどり着いたとき、その経路が<strong>必ず最短経路（最小手数）</strong>になることです。「迷路の最短歩数」を求める問題はBFSの典型例です。
+                    </p>
+                    <p>実装には「次に行くべき場所リスト」を管理する<strong>キュー（<code>collections.deque</code>）</strong>を使います。</p>
+                    <pre><code>from collections import deque
+# (4-6章のBFSコードと同様のため省略)
+</code></pre>
+                </div>
+
+                <div class="page-content" id="part6-ex">
+                    <h1>6-E: 部末演習</h1>
+                    <h2>探索戦略を使い分ける</h2>
+                    <p>
+                        第6部、お疲れ様でした！全探索、二分探索、DFS、BFSという、アルゴリズムの基本となる探索戦略を学びました。この演習では、問題の性質に応じて適切な戦略を選ぶ訓練をします。
+                    </p>
+                    <hr>
+                    <h3>【演習問題】部分和問題の応用</h3>
+                    <blockquote>
+                        N個の整数からなるリストAと、整数Kが与えられます。Aの要素をいくつか（0個でも可）選んで、その和をKにすることはできますか？
+                    </blockquote>
+                    <p><strong>入力例:</strong><br>
+                        4 13<br>
+                        1 2 4 8
+                    </p>
+                    <p><strong>出力例:</strong><br>
+                        Yes （1+4+8=13）
+                    </p>
+                    <details>
+                        <summary>思考プロセスと解答例</summary>
+                        <p><strong>考え方:</strong>
+                        <ol>
+                            <li>Nの制約を確認します。もしNが20程度と小さければ、各要素について「選ぶ・選ばない」の2択を全探索できます。これは<strong>bit全探索</strong>の典型パターンです。
+                            </li>
+                            <li>2<sup>N</sup>通りの全ての選び方を試し、その和がKと一致するかをチェックします。</li>
+                        </ol>
+                        </p>
+                        <pre><code>N, K = map(int, input().split())
+A = list(map(int, input().split()))
+
+found = False
+for i in range(1 << N):
+    current_sum = 0
+    for j in range(N):
+        if (i >> j) & 1:
+            current_sum += A[j]
+    if current_sum == K:
+        found = True
+        break
+
+if found:
+    print("Yes")
+else:
+    print("No")
+</code></pre>
+                    </details>
+                </div>
+
+                <!-- =============== 第7部：動的計画法(DP) =============== -->
+                <div class="page-content" id="chap7-1">
+                    <h1>7-1: DPの心：メモ化再帰</h1>
+                    <h2>「賢いサボり方」の技術</h2>
+                    <p>
+                        第4部で学んだフィボナッチ数を計算する再帰関数を思い出してください。<code>fib(5)</code>を計算するのに、<code>fib(3)</code>が2回、<code>fib(2)</code>が3回も呼ばれるなど、非常に無駄が多い処理でした。
+                    </p>
+                    <p>
+                        「<strong>一度計算した答えは、メモしておいて二度と計算しない</strong>」——この、プログラミングにおける「賢いサボり方」が、動的計画法(DP)の第一歩、<strong>メモ化再帰</strong>です。
+                    </p>
+                    <pre><code># メモ用の配列（-1は未計算を表す）
+memo = [-1] * 51 
+
+def fib(n):
+    # ベースケース
+    if n == 0: return 0
+    if n == 1: return 1
+    
+    # すでに計算済みなら、メモした値を返す
+    if memo[n] != -1:
+        return memo[n]
+    
+    # 未計算なら、計算してメモしてから返す
+    memo[n] = fib(n - 1) + fib(n - 2)
+    return memo[n]
+
+print(fib(50))
+</code></pre>
+                    <p>
+                        ただこれだけで、計算量は爆発的なO(2<sup>N</sup>)から、驚異的な<strong>O(N)</strong>にまで削減されます。各<code>fib(n)</code>が、高々1回しか計算されなくなるからです。
+                    </p>
+                    <p>この「テーブル（配列や辞書）を用意して、計算結果を記録する」という考え方が、あらゆるDPの基本になります。</p>
+                </div>
+
+                <div class="page-content" id="chap7-2">
+                    <h1>7-2: 配るDPと貰うDP</h1>
+                    <h2>DPの2つの実装スタイル</h2>
+                    <p>
+                        メモ化再帰はトップダウン（大きな問題から小さな問題へ）のアプローチでしたが、DPはボトムアップ（小さな問題から大きな問題へ）に実装することもできます。これには主に2つのスタイルがあります。
+                    </p>
+                    <p><strong>問題設定：</strong>N個の足場があり、足場iからはi+1かi+2にジャンプできます。足場iにたどり着く方法の総数を求めてください。</p>
+
+                    <h3>貰うDP (pull-style)</h3>
+                    <p>「今いるマスには、どこから来られるか？」を考えるスタイルです。</p>
+                    <pre><code># dp[i]: 足場iへの到達方法の数
+dp = [0] * N
+dp[0] = 1 # スタート
+
+for i in range(1, N):
+    # 足場i-1から貰う
+    if i - 1 >= 0:
+        dp[i] += dp[i-1]
+    # 足場i-2から貰う
+    if i - 2 >= 0:
+        dp[i] += dp[i-2]
+</code></pre>
+
+                    <h3>配るDP (push-style)</h3>
+                    <p>「今いるマスから、どこへ行けるか？」を考えるスタイルです。</p>
+                    <pre><code># dp[i]: 足場iへの到達方法の数
+dp = [0] * N
+dp[0] = 1 # スタート
+
+for i in range(N):
+    # 足場i+1へ配る
+    if i + 1 < N:
+        dp[i+1] += dp[i]
+    # 足場i+2へ配る
+    if i + 2 < N:
+        dp[i+2] += dp[i]
+</code></pre>
+                    <p>どちらのスタイルでも解けますが、問題によって考えやすい方が異なります。両方の視点を持っておくことが重要です。</p>
+                </div>
+
+                <div class="page-content" id="chap7-3">
+                    <h1>7-3: DPパターン(ナップサック問題)</h1>
+                    <h2>価値を最大化する選択</h2>
+                    <p>
+                        DPには、いくつかの有名な問題の「型」があります。その代表格が<strong>ナップサック問題</strong>です。
+                    </p>
+                    <blockquote>
+                        N個の品物があり、それぞれ重さw<sub>i</sub>と価値v<sub>i</sub>が決まっています。重さの合計がWを超えないように品物を選んだとき、価値の合計の最大値はいくらになりますか？
+                    </blockquote>
+                    <h3>DPテーブルの設計</h3>
+                    <p>
+                        <code>dp[i][w]</code> を「<strong>i番目までの品物の中から、重さの合計がw以下になるように選んだときの、価値の最大値</strong>」と定義します。
+                    </p>
+                    <p>i番目の品物を考えるとき、選択肢は2つです。</p>
+                    <ul>
+                        <li><strong>選ばない:</strong> この場合、価値はi-1番目までの品物で重さwを達成した場合と同じ。→ <code>dp[i-1][w]</code></li>
+                        <li><strong>選ぶ:</strong> この場合、価値は「i-1番目までの品物で重さ(w - w<sub>i</sub>)を達成した価値」に v<sub>i</sub>
+                            を足したもの。→ <code>dp[i-1][w - w<sub>i</sub>] + v<sub>i</sub></code></li>
+                    </ul>
+                    <p>この2つのうち、大きい方を<code>dp[i][w]</code>の値として採用します。</p>
+                    <pre><code>N, W = ...
+items = [(w_1, v_1), (w_2, v_2), ...]
+
+# dp[i][w]: i番目までの品物で重さw以下での最大価値
+dp = [[0] * (W + 1) for _ in range(N + 1)]
+
+for i in range(N):
+    w_i, v_i = items[i]
+    for w in range(W + 1):
+        # i番目の品物を選ばない場合
+        dp[i+1][w] = max(dp[i+1][w], dp[i][w])
+        
+        # i番目の品物を選ぶ場合
+        if w + w_i <= W:
+            dp[i+1][w+w_i] = max(dp[i+1][w+w_i], dp[i][w] + v_i)
+
+print(dp[N][W])
+</code></pre>
+                </div>
+
+                <div class="page-content" id="part7-ex">
+                    <h1>7-E: 部末演習</h1>
+                    <h2>DPの思考法を体得する</h2>
+                    <p>
+                        第7部、お疲れ様でした！動的計画法(DP)という、競技プログラミングにおける最重要テクニックの一つの扉を開きましたね。この演習では、DPテーブルの設計と更新式の立案という、DPの核心部分をトレーニングします。
+                    </p>
+                    <hr>
+                    <h3>【演習問題】最長増加部分列 (LIS)</h3>
+                    <blockquote>
+                        N個の整数からなる数列Aが与えられます。Aからいくつかの要素を取り出して作ることができる、単調に増加する部分列のうち、最も長いものの長さを求めてください。
+                    </blockquote>
+                    <p><strong>入力例:</strong><br>
+                        5<br>
+                        3 1 4 2 5
+                    </p>
+                    <p><strong>出力例:</strong><br>
+                        3 (例えば [1, 2, 5] や [1, 4, 5])
+                    </p>
+                    <details>
+                        <summary>思考プロセスと解答例</summary>
+                        <p><strong>考え方:</strong>
+                        <ol>
+                            <li><strong>DPテーブルの定義:</strong>
+                                <code>dp[i]</code>を「<strong>最後がA[i]で終わるような</strong>、最長増加部分列の長さ」と定義します。
+                            </li>
+                            <li><strong>初期化:</strong> どんな要素も、それ自身だけで長さ1の部分列をなすので、<code>dp</code>テーブルを全て1で初期化します。</li>
+                            <li><strong>遷移を考える（貰うDP）:</strong>
+                                <code>dp[i]</code>を計算するには、<code>j < i</code>となる全ての<code>j</code>について考えます。もし<code>A[j] < A[i]</code>ならば、<code>A[j]</code>で終わる増加部分列の末尾に<code>A[i]</code>を繋げることができます。よって、そのような全ての<code>j</code>に対する<code>dp[j] + 1</code>の最大値が、<code>dp[i]</code>の候補になります。
+                            </li>
+                            <li><strong>最終的な答え:</strong> <code>dp</code>テーブルの全ての値の最大値が、全体の答えとなります。（LISはどこで終わるか分からないため）
+                            </li>
+                        </ol>
+                        </p>
+                        <pre><code>N = int(input())
+A = list(map(int, input().split()))
+
+# dp[i]: 最後がA[i]であるような最長増加部分列の長さ
+dp = [1] * N
+
+for i in range(N):
+    for j in range(i):
+        if A[j] < A[i]:
+            dp[i] = max(dp[i], dp[j] + 1)
+
+print(max(dp))
+</code></pre>
+                        <p><strong>計算量:</strong> この解法の計算量はO(N<sup>2</sup>)です。実は、二分探索を使うことでO(N log
+                            N)に改善できますが、まずはこの基本的なDPの発想を理解することが重要です。</p>
+                    </details>
+                </div>
+
+                <div class="page-content" id="challenge7">
+                    <h1>挑戦：Bランク & AtCoder(C)</h1>
+                    <p>
+                        おめでとうございます！DPの基本的な考え方をマスターしたあなたは、Paizaスキルチェックの「Bランク」やAtCoderのC問題レベルに挑戦する準備ができました。
+                    </p>
+                    <p>
+                        このレベルの問題では、「この問題はDPで解けるのではないか？」と気づき、適切なDPテーブルを設計する能力が問われます。
+                    </p>
+                    <ul>
+                        <li><b>挑戦のリンク: <a
+                                    href="https://paiza.jp/works/mondai/b_rank_level_up_problems/b_rank_level_up_problems__dp_1"
+                                    target="_blank">Paiza Bランクレベルアップ問題集（動的計画法）</a></b></li>
+                        <li><b>ヒント：</b>第7部で学んだDPの基本的な型（貰うDP/配るDP）がそのまま使えます。</li>
+                    </ul>
+                    <ul>
+                        <li><b>挑戦のリンク: <a href="https://atcoder.jp/contests/abc040/tasks/abc040_c"
+                                    target="_blank">AtCoder ABC040 C - 柱渡り</a></b></li>
+                        <li><b>ヒント：</b>本章で学んだカエルの足場問題と全く同じ構造です。DPテーブルの定義と更新式を思い出しましょう。</li>
+                    </ul>
+                </div>
+
+                <!-- =============== 第8部：応用アルゴリズム =============== -->
+                <div class="page-content" id="chap8-1">
+                    <h1>8-1: 優先度付きキュー</h1>
+                    <h2>ただの行列じゃない、「VIP待遇」のある行列</h2>
+                    <p>
+                        病院の救急外来を想像してください。患者は到着順に診察されるわけではありませんよね。軽傷の人より、重体の人が優先されます。
+                    </p>
+                    <p>
+                        このように、単なる「先入れ先出し」ではなく、「<strong>最も優先度が高い（値が小さい or
+                            大きい）ものから取り出す</strong>」ことができるデータ構造が<strong>優先度付きキュー（Priority Queue）</strong>です。
+                    </p>
+                    <h2>実装：`heapq`ライブラリ</h2>
+                    <p>Pythonでは、<code>heapq</code>ライブラリがこの機能を提供します。これは内部的に「ヒープ」という木構造を使って、効率的に最小値を取り出せるようになっています。</p>
+                    <p><strong>注意：</strong><code>heapq</code>は<strong>最小ヒープ</strong>として実装されています。つまり、常に<strong>一番小さい要素</strong>が取り出されます。
+                    </p>
+                    <pre><code>import heapq
+
+# 優先度付きキュー（実体はただのリスト）
+pq = []
+
+# 要素の追加 (heappush)
+heapq.heappush(pq, 30) # [30]
+heapq.heappush(pq, 10) # [10, 30]
+heapq.heappush(pq, 20) # [10, 30, 20] ※内部はヒープ構造
+
+print("現在のキューの中身（ヒープ構造）:", pq)
+
+# 最小値の取り出し (heappop)
+min_val = heapq.heappop(pq)
+print("取り出した最小値:", min_val) # 10
+print("残りのキュー:", pq)
+</code></pre>
+                    <p>N個の要素が入っているとき、要素の追加(push)も、最小値の取り出し(pop)も、どちらも<strong>O(log N)</strong>という驚異的な速さで行えます。</p>
+
+                    <h2>やってみよう！優先度付きキューを使いこなす</h2>
+                    <h3>【小問題1】最小値の連続取り出し</h3>
+                    <blockquote>
+                        空の優先度付きキューに、50, 10, 80, 30, 20 をこの順で追加した後、3回連続で最小値を取り出して表示してください。
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <pre><code>import heapq
+pq = []
+data = [50, 10, 80, 30, 20]
+for x in data:
+    heapq.heappush(pq, x)
+
+for _ in range(3):
+    print(heapq.heappop(pq))
+# 出力: 10, 20, 30
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】最大値の取り出し</h3>
+                    <blockquote>
+                        <code>heapq</code>は最小値しか取り出せませんが、工夫することで最大値を取り出す「最大ヒープ」を実装できます。数値の符号を反転させる方法で、データ[10, 50,
+                        20]から最大値を取り出してください。
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong>
+                            全ての数値を-1倍して<code>heappush</code>します。すると、元は最大だった数値が、符号が反転して最小値になります。<code>heappop</code>で取り出した後、再度-1倍すれば元の最大値が復元できます。
+                        </p>
+                        <pre><code>import heapq
+pq = []
+data = [10, 50, 20]
+for x in data:
+    heapq.heappush(pq, -x) # 符号を反転してpush
+
+max_val = -heapq.heappop(pq) # popして再度反転
+print(max_val) # 50
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題3】タプルの利用</h3>
+                    <blockquote>
+                        タスク管理を考えます。(優先度, タスク名) のタプルを優先度付きキューに追加し、最も優先度の高い（数値が小さい）タスクを取り出してください。データ:
+                        <code>[(3, "書類整理"), (1, "緊急メール返信"), (2, "会議準備")]</code>
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong> 優先度付きキューは、タプルが追加された場合、タプルの0番目の要素、次に1番目の要素…という順で比較します。そのため、`(優先度,
+                            データ)`の形にすれば自然に優先度順に並びます。</p>
+                        <pre><code>import heapq
+tasks = [(3, "書類整理"), (1, "緊急メール返信"), (2, "会議準備")]
+pq = []
+for task in tasks:
+    heapq.heappush(pq, task)
+
+most_urgent_task = heapq.heappop(pq)
+print(most_urgent_task) # (1, '緊急メール返信')
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap8-2">
+                    <h1>8-2: ダイクストラ法</h1>
+                    <h2>最強の「ナビゲーション」アルゴリズム</h2>
+                    <p>
+                        あなたがカーナビアプリだとします。スタートからゴールまで、各道路に「通過にかかる時間（コスト）」が設定されているとき、どうやって「最速ルート」を見つけますか？
+                    </p>
+                    <p>
+                        これがまさに<strong>ダイクストラ法</strong>が解決する問題です。ダイクストラ法は、「<strong>辺に重み（コスト）があるグラフにおいて、一つの始点から他の全ての頂点への最短経路を求める</strong>」アルゴリズムです。
+                    </p>
+                    <h2>アルゴリズムの動き</h2>
+                    <p>
+                        ダイクストラ法は「<strong>スタートから近い順に、各都市への最短距離を確定させていく</strong>」イメージです。
+                    </p>
+                    <ol>
+                        <li>各都市への最短距離を「未定（無限大）」、スタート地点だけ「0」とする。</li>
+                        <li>「未確定の都市のうち、最も距離が短い都市」を一つ選ぶ。（ここで<strong>優先度付きキュー</strong>が活躍！）</li>
+                        <li>その選んだ都市を「距離確定」とする。</li>
+                        <li>確定した都市から行ける隣の都市について、「この都市経由で行ったら、もっと近くなる？」を計算し、もし近くなるなら距離を更新する。</li>
+                        <li>全ての都市が確定するまで2-4を繰り返す。</li>
+                    </ol>
+                    <pre><code>import heapq
+# V:頂点数, E:辺数, r:始点
+# graph[u] = [(v, cost), ...]: uからvへコストcostの辺
+# (入力処理は省略)
+graph = ... 
+dist = [float('inf')] * V
+dist[r] = 0
+pq = [(0, r)] # (距離, 頂点)
+
+while pq:
+    d, u = heapq.heappop(pq)
+    if d > dist[u]: continue # 更新済みの古い情報なら無視
+
+    for v, cost in graph[u]:
+        if dist[u] + cost < dist[v]:
+            dist[v] = dist[u] + cost
+            heapq.heappush(pq, (dist[v], v))
+</code></pre>
+
+                    <h2>やってみよう！ダイクストラ法の理解を深める</h2>
+                    <h3>【小問題1】使えないケース</h3>
+                    <blockquote>ダイクストラ法は最短経路を求める万能アルゴリズムに見えますが、一つだけ「使ってはいけない」重大な制約があります。それは何でしょうか？</blockquote>
+                    <details>
+                        <summary>解答</summary>
+                        <p><strong>答え:</strong>
+                            辺のコストに**負の値（マイナスの重み）**が含まれる場合です。ダイクストラ法は「一度距離が確定した頂点は、それ以上短くなることはない」という前提で動くため、負の辺があるとこの前提が崩れてしまい、正しい答えを出せません。
+                        </p>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】手でトレース</h3>
+                    <blockquote>
+                        本章の導入で使ったグラフ<code>{'A': {'B': 1, 'C': 4}, 'B': {'C': 2, 'D': 5}, 'C': {'D': 1}, 'D': {}}</code>で、スタートを'B'にした場合、'D'への最短距離はいくつになりますか？手でアルゴリズムを追ってみましょう。
+                    </blockquote>
+                    <details>
+                        <summary>解答</summary>
+                        <p><strong>答え:</strong> 3です。経路は B → C → D となり、コストは 2 + 1 = 3 となります。直接 B → D
+                            へ行くとコストが5なので、Cを経由する方が速いですね。</p>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap8-3">
+                    <h1>8-3: Union-Find木</h1>
+                    <h2>「グループ分け」を爆速で管理する</h2>
+                    <p>
+                        SNSで、友達の友達はみな友達、というように「友達グループ」を作っていく状況を想像してください。「AさんとBさんが友達になった」「CさんとDさんが友達になった」「BさんとCさんが友達になった」…このとき、AさんとDさんは同じグループでしょうか？
+                    </p>
+                    <p>
+                        このように、「<strong>いくつかの要素を、互いに素な集合（グループ）に分け、2つの要素が同じグループに属するかを高速に判定したり、2つのグループを1つに統合したりする</strong>」ためのデータ構造が<strong>Union-Find木</strong>です。
+                    </p>
+                    <h2>提供する主な操作</h2>
+                    <ul>
+                        <li><code>unite(x, y)</code>: 要素xが属するグループと、要素yが属するグループを統合する。</li>
+                        <li><code>same(x, y)</code>: xとyが同じグループに属するかを判定する。</li>
+                    </ul>
+                    <p>
+                        Union-Find木はクラスとして実装するのが一般的で、経路圧縮などの工夫を施すことで、各操作を<strong>ほぼO(1)</strong>という驚異的な速度で実行できます。
+                    </p>
+                    <pre><code>class UnionFind:
+    def __init__(self, n): self.parent = list(range(n))
+    def find(self, x):
+        if self.parent[x] == x: return x
+        self.parent[x] = self.find(self.parent[x]); return self.parent[x]
+    def unite(self, x, y):
+        rx, ry = self.find(x), self.find(y)
+        if rx != ry: self.parent[ry] = rx
+    def same(self, x, y): return self.find(x) == self.find(y)
+</code></pre>
+
+                    <h2>やってみよう！Union-Findを使いこなす</h2>
+                    <h3>【小問題1】グループ判定</h3>
+                    <blockquote>5人の人がいます(0〜4)。(0,1), (1,2), (3,4)がそれぞれ友達になったとき、(0,2)は同じグループですか？ (0,3)は同じグループですか？
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>uf = UnionFind(5)
+uf.unite(0, 1)
+uf.unite(1, 2)
+uf.unite(3, 4)
+print("0と2は同じ？:", uf.same(0, 2)) # True
+print("0と3は同じ？:", uf.same(0, 3)) # False
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】連結成分の個数</h3>
+                    <blockquote>上記の小問題1の状況で、最終的にグループの数（連結成分の数）はいくつですか？</blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong> 親（代表元）が自分自身（<code>parent[i] == i</code>）になっている要素の数を数えれば、それがグループの数になります。
+                        </p>
+                        <pre><code># 上記のufオブジェクトの続き
+count = 0
+for i in range(5):
+    if uf.parent[i] == i:
+        count += 1
+print("グループの数:", count) # 2
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap8-4">
+                    <h1>8-4: 最小全域木</h1>
+                    <h2>全ての拠点を最小コストで繋ぐ</h2>
+                    <p>あなたはインフラ技術者です。いくつかの都市（頂点）があり、都市間にケーブルを敷設するコスト（辺の重み）が分かっています。<strong>全ての都市を連結させる（どの都市からでも他の都市へ行けるようにする）ために、ケーブルの総敷設コストを最小にしたい</strong>。どうすればよいでしょうか？
+                    </p>
+                    <p>この問題を解決するのが<strong>最小全域木（Minimum Spanning Tree, MST）</strong>を求めるアルゴリズムです。</p>
+                    <h2>クラスカル法：欲張りなアプローチ</h2>
+                    <p>MSTを求める代表的なアルゴリズムが<strong>クラスカル法</strong>です。</p>
+                    <ol>
+                        <li>全ての辺を、コストが<strong>小さい順</strong>にソートします。</li>
+                        <li>コストの小さい辺から順番に見ていきます。</li>
+                        <li>その辺を追加しても<strong>閉路（ループ）ができないなら、その辺を採用</strong>します。（ここで<strong>Union-Find木</strong>が活躍！）
+                        </li>
+                        <li>(頂点の数 - 1)本の辺を採用するまで繰り返します。</li>
+                    </ol>
+                    <pre><code># UnionFindクラスは前章のものを流用
+# edges: (コスト, 頂点u, 頂点v) のリスト
+edges.sort() 
+
+uf = UnionFind(N)
+total_cost = 0
+for cost, u, v in edges:
+    if not uf.same(u, v):
+        uf.unite(u, v)
+        total_cost += cost
+</code></pre>
+                    <h2>やってみよう！最小全域木の考え方</h2>
+                    <h3>【小問題1】MST vs 最短経路</h3>
+                    <blockquote>ある2頂点S, Gを結ぶ最短経路は、最小全域木に含まれる辺だけで構成されるとは限りません。それはなぜですか？</blockquote>
+                    <details>
+                        <summary>解答</summary>
+                        <p><strong>答え:</strong>
+                            MSTは「全体のコスト」を最小化するのが目的であり、個別の2点間の最短経路を保証するものではないからです。MSTではコストの大きい辺を避けますが、その辺が特定の2点間のショートカットになっている可能性があるためです。
+                        </p>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】クラスカル法の手順</h3>
+                    <blockquote>辺のコストが(A,B,1), (B,C,2), (C,A,3)の3本あるグラフで、クラスカル法を適用した場合、どの辺が選ばれますか？</blockquote>
+                    <details>
+                        <summary>解答</summary>
+                        <p><strong>答え:</strong>
+                        <ol>
+                            <li>コスト1の(A,B)を選ぶ。</li>
+                            <li>コスト2の(B,C)を選ぶ。</li>
+                            <li>コスト3の(C,A)を選ぶと、A,B,Cがループになってしまうので選ばない。</li>
+                        </ol>
+                        よって、(A,B)と(B,C)の2本が選ばれます。
+                        </p>
+                    </details>
+                </div>
+
+                <div class="page-content" id="part8-ex">
+                    <h1>8-E: 部末演習</h1>
+                    <h2>応用アルゴリズムの実践</h2>
+                    <p>
+                        第8部、お疲れ様でした！ダイクストラ法やUnion-Findといった、グラフ問題の強力な武器を学びました。これらは多くの問題の基礎となる重要なアルゴリズムです。
+                    </p>
+                    <hr>
+                    <h3>【演習問題】派閥の大きさ</h3>
+                    <blockquote>
+                        N人の生徒とM個の友好関係（誰と誰が友達か）が与えられます。友達の友達は友達、とみなしたとき、最大の派閥（グループ）の人数は何人ですか？
+                    </blockquote>
+                    <p><strong>入力例:</strong><br>
+                        5 3<br>
+                        0 1<br>
+                        1 2<br>
+                        3 4
+                    </p>
+                    <p><strong>出力例:</strong><br>3 (グループ{0,1,2}と{3,4}ができ、大きい方は3人)</p>
+                    <details>
+                        <summary>思考プロセスと解答例</summary>
+                        <p><strong>考え方:</strong>
+                        <ol>
+                            <li>「グループ分け」「友達の友達は友達」というキーワードから、<strong>Union-Find木</strong>が最適だと判断します。</li>
+                            <li>最初にN人全員が別々のグループにいる状態から始めます。</li>
+                            <li>M個の友好関係を読み込み、<code>unite(a, b)</code>で友達同士を同じグループにしていきます。</li>
+                            <li>全ての関係を処理した後、各グループのサイズを数え上げ、その最大値が答えになります。（グループのサイズを管理する機能拡張版Union-Findを使うと便利です）</li>
+                        </ol>
+                        </p>
+                        <pre><code># サイズ管理機能付きのUnionFindクラスを流用
+N, M = map(int, input().split())
+uf = UnionFind(N)
+
+for _ in range(M):
+    u, v = map(int, input().split())
+    uf.unite(u, v)
+
+max_size = 0
+for i in range(N):
+    max_size = max(max_size, uf.size(i))
+
+print(max_size)
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="challenge8">
+                    <h1>挑戦：Aランク問題</h1>
+                    <p>
+                        おめでとうございます！ダイクストラ法やUnion-Findといった応用アルゴリズムを学び、あなたはPaizaスキルチェックの「Aランク」問題に挑戦する準備が整いました。
+                    </p>
+                    <p>
+                        Aランク問題は、まさにこの部で学んだような典型アルゴリズムの知識を直接問う問題が多く出題されます。「この問題はあのアルゴリズムを使えば解ける！」と見抜く力が試されます。
+                    </p>
+                    <ul>
+                        <li><b>挑戦のリンク: <a
+                                    href="https://paiza.jp/works/mondai/a_rank_level_up_problems/a_rank_graph_step2"
+                                    target="_blank">Paiza Aランクレベルアップ問題集（ダイクストラ法）</a></b></li>
+                        <li><b>ヒント：</b>第8-2章で学んだダイクストラ法のコードがほぼそのまま使えます。</li>
+                    </ul>
+                    <ul>
+                        <li><b>挑戦のリンク: <a href="https://atcoder.jp/contests/atc001/tasks/unionfind_a"
+                                    target="_blank">AtCoder ATC001 A - Union Find</a></b></li>
+                        <li><b>ヒント：</b>第8-3章で学んだUnion-Find木そのものです。クラスを正しく実装できるか試しましょう。</li>
+                    </ul>
+                </div>
+
+                <!-- =============== 第9部：高度なテクニック =============== -->
+                <div class="page-content" id="chap9-1">
+                    <h1>9-1: 累積和・いもす法</h1>
+                    <h2>「区間への操作」を高速化する前処理</h2>
+                    <p>
+                        これまでに学んだアルゴリズムは、単体のデータや、データ間の関係性を扱うものでした。しかし、問題によっては「ある<strong>区間</strong>全体に対する操作」が求められることがあります。
+                    </p>
+                    <p>
+                        例えば、「配列のL番目からR番目までの和を、何度も高速に求めたい」「たくさんの区間に、一様に値を足したい」といった要求です。これらを愚直に行うと計算量が悪化します。この「区間」を効率的に扱うための前処理テクニックが<strong>累積和</strong>とその応用形である<strong>いもす法</strong>です。
+                    </p>
+
+                    <h3>累積和：区間の合計クエリをO(1)に</h3>
+                    <p>
+                        「リストのL番目からR番目までの要素の合計を求めてください」というクエリがQ回与えられる問題を考えます。毎回ループを回すとO(NQ)かかり、TLEの原因になります。
+                    </p>
+                    <p>
+                        そこで、<strong>累積和</strong>を使います。「<strong>あらかじめ先頭から各インデックスまでの和を計算して、別のリストに保存しておく</strong>」という前処理をO(N)で行うことで、その後のクエリにO(1)で答えられるようになります。
+                    </p>
+                    <pre><code>A = [10, 20, 30, 40, 50]
+
+# 累積和リストSを作る（元のリストより1つ長くするのがコツ）
+S = [0] * (len(A) + 1)
+for i in range(len(A)):
+    S[i+1] = S[i] + A[i]
+# Sは [0, 10, 30, 60, 100, 150] となる
+
+# 例：インデックス1から3までの和（20+30+40）を求める
+# S[4]（A[0]~A[3]の和）から S[1]（A[0]の和）を引く
+result = S[3+1] - S[1] 
+print(result) # 90
+</code></pre>
+
+                    <h3>いもす法：区間への一括加算をO(1)に</h3>
+                    <p>
+                        「たくさんの区間 [L, R] に、値xを足してください」という操作を何度も行う場合、毎回ループで足していては間に合いません。
+                        <strong>いもす法</strong>は、このような「区間への加算」を効率化する驚異的なテクニックです。
+                    </p>
+                    <p><strong>アイデア：</strong>「区間の始まりで+xし、区間の終わりの次で-xする」という印だけを付けておきます。最後に、全体の累積和を一度だけとれば、各区間にだけxが足された状態が復元できます。
+                    </p>
+                    <pre><code># 10個のマスに、区間[2,5]に+10、区間[4,8]に+20したい
+diff = [0] * 11 # 差分を記録する配列
+
+# 区間[2,5]への操作
+diff[2] += 10
+diff[5+1] -= 10
+
+# 区間[4,8]への操作
+diff[4] += 20
+diff[8+1] -= 20
+
+# diff: [0, 0, 10, 0, 20, 0, -10, 0, 0, -20, 0]
+
+# 最後に累積和をとる
+result = [0] * 10
+result[0] = diff[0]
+for i in range(1, 10):
+    result[i] = result[i-1] + diff[i]
+
+print(result) # [0, 0, 10, 10, 30, 30, 20, 20, 20, 0]
+</code></pre>
+                </div>
+
+                <div class="page-content" id="chap9-2">
+                    <h1>9-2: しゃくとり法</h1>
+                    <h2>二重ループをO(N)に変える探索術</h2>
+                    <p>
+                        「配列の中から、条件を満たす『連続した部分配列』を数え上げたい」<br>
+                        このような問題で、開始位置と終了位置を二重ループで全探索すると、計算量はO(N<sup>2</sup>)になってしまいます。Nが大きいとTLEです。
+                    </p>
+                    <p>
+                        しかし、扱う区間の性質に「<strong>単調性</strong>」（区間を広げると条件に近づき、縮めると遠ざかる、など）があれば、<strong>しゃくとり法</strong>が使えます。これは、区間の右端と左端を上手く動かすことで、探索を線形時間O(N)に抑えるテクニックです。
+                    </p>
+
+                    <h3>実装パターン：右端を動かし、左端を縮める</h3>
+                    <p>
+                        しゃくとり法は、配列の右端を指すポインタ<code>right</code>をforループで動かし、その内側で「条件を満たしている限り」左端を指すポインタ<code>left</code>をwhileループで動かす、という実装が一般的です。
+                    </p>
+                    <pre><code># 問題：和がK以上となる、最短の連続部分配列の長さを求める
+A = [1, 4, 2, 7, 3, 5]
+K = 10
+N = len(A)
+min_len = float('inf')
+current_sum = 0
+left = 0
+
+# 右端 'right' を0からN-1まで動かしていく
+for right in range(N):
+    current_sum += A[right]
+
+    # 和がK以上になる限り、条件を満たす最短の区間を探す
+    while current_sum >= K:
+        min_len = min(min_len, right - left + 1)
+        current_sum -= A[left] # 左端を縮めて次の探索へ
+        left += 1
+
+print(min_len) # 2 (7+3=10)
+</code></pre>
+                    <p>
+                        ポインタ<code>right</code>と<code>left</code>はそれぞれ一方向にしか進まないため、全体の計算量は<strong>O(N)</strong>になります。
+                    </p>
+                </div>
+
+                <div class="page-content" id="chap9-3">
+                    <h1>9-3: 座標圧縮</h1>
+                    <h2>巨大な座標を小さなインデックスに</h2>
+                    <p>
+                        「<code>A = [10, 100, 5, 50000]</code> という巨大な値を持つ配列を、DPテーブルの添字に使いたい…でもメモリが足りない！」
+                    </p>
+                    <p>
+                        このような、<strong>値そのものではなく「値の大小関係（順位）」だけが重要</strong>な場面で、巨大な値を0から始まる連続した小さな整数に変換するテクニックが<strong>座標圧縮</strong>です。
+                    </p>
+                    <h2>実装方法：ソートと辞書マッピング</h2>
+                    <ol>
+                        <li>圧縮したい値の重複を除いてソートする。</li>
+                        <li>ソート済みのリストの各値と、そのインデックス（0, 1, 2, ...）を対応付ける辞書を作る。</li>
+                        <li>元の配列の各値を、辞書を使って圧縮後の値に置き換える。</li>
+                    </ol>
+                    <pre><code>A = [10, 100, 5, 50000, 100]
+
+# 1. 重複を除いてソート
+unique_sorted = sorted(list(set(A)))
+# -> [5, 10, 100, 50000]
+
+# 2. マッピング辞書を作成
+coord_map = {val: i for i, val in enumerate(unique_sorted)}
+# -> {5: 0, 10: 1, 100: 2, 50000: 3}
+
+# 3. 圧縮
+compressed = [coord_map[x] for x in A]
+print(compressed) # [1, 2, 0, 3, 2]
+</code></pre>
+                    <p>
+                        座標圧縮はそれ単体で完結するアルゴリズムではなく、他のデータ構造（セグメント木など）やアルゴリズムと組み合わせることで真価を発揮する、重要な「前処理」のテクニックです。
+                    </p>
+                </div>
+
+                <div class="page-content" id="chap9-4">
+                    <h1>9-4: セグメント木</h1>
+                    <h2>区間への問いに光速で答える</h2>
+                    <p>
+                        第5部で「作法」として学んだデータ構造も、ここで「応用テクニック」として再登場します。
+                        「<strong>区間に対する問い合わせ（Range Query）</strong>」と「<strong>一点の値の更新（Point
+                            Update）</strong>」の両方を、爆速（<strong>O(log N)</strong>）で処理できるデータ構造が<strong>セグメント木</strong>でした。
+                    </p>
+                    <h2>どんな問題を解決するか？</h2>
+                    <p>
+                        例えば、「N人の兵士が横一列に並んでおり、それぞれの兵士には強さがある。司令官がQ回命令を出す。命令には『i番目の兵士の強さをxに変更せよ』というものと、『L番目からR番目までの兵士の中で、最も強い者の強さはいくつか？』というものがある。」といった問題です。
+                    </p>
+                    <p>
+                        愚直にやると、更新はO(1)ですが、区間の最大値クエリにO(N)かかり、全体でO(NQ)となります。セグメント木を使えば、どちらの操作もO(log N)で行え、全体でO(Q log
+                        N)にまで高速化できます。
+                    </p>
+                </div>
+
+                <div class="page-content" id="part9-ex">
+                    <h1>9-E: 部末演習</h1>
+                    <h2>計算量削減テクニックを使いこなす</h2>
+                    <p>
+                        第9部、お疲れ様でした！O(N<sup>2</sup>)をO(N)やO(N log N)に削減する強力なテクニックを学びました。これらはより難しい問題への足がかりとなります。
+                    </p>
+                    <hr>
+                    <h3>【演習問題】区間の和</h3>
+                    <blockquote>
+                        N個の整数からなる数列Aと、Q個のクエリが与えられます。各クエリでは区間の左端Lと右端Rが与えられるので、AのL番目からR番目（0-indexed）までの和を答えてください。
+                    </blockquote>
+                    <p><strong>制約:</strong> N, Q ≤ 10<sup>5</sup></p>
+                    <details>
+                        <summary>思考プロセスと解答例</summary>
+                        <p><strong>考え方:</strong>
+                        <ol>
+                            <li>NとQが大きいので、クエリ毎にループを回すとO(NQ)となりTLEします。</li>
+                            <li>「区間の和」を高速に求める問題なので、<strong>累積和</strong>の出番です。</li>
+                            <li>最初にO(N)で累積和テーブルを作成しておけば、各クエリにはO(1)で答えられます。全体の計算量はO(N+Q)です。</li>
+                        </ol>
+                        </p>
+                        <pre><code>N, Q = map(int, input().split())
+A = list(map(int, input().split()))
+
+S = [0] * (N + 1)
+for i in range(N):
+    S[i+1] = S[i] + A[i]
+
+for _ in range(Q):
+    L, R = map(int, input().split())
+    ans = S[R + 1] - S[L] # 0-indexedなのでR+1とL
+    print(ans)
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="challenge9">
+                    <h1>挑戦：Aランク & AtCoder(D)</h1>
+                    <p>
+                        おめでとうございます！累積和やしゃくとり法といった、計算量を劇的に改善するテクニックを身につけたあなたは、Paizaスキルチェックの「Aランク」の中でも難易度の高い問題や、AtCoderのD問題に挑戦する力がついてきました。
+                    </p>
+                    <p>
+                        このレベルの問題は、単純なアルゴリズムの適用だけでは解けず、「前処理」や「計算の工夫」が求められます。
+                    </p>
+                    <ul>
+                        <li><b>挑戦のリンク: <a
+                                    href="https://paiza.jp/works/mondai/a_rank_level_up_problems/a_rank_snake_map_step4"
+                                    target="_blank">Paiza Aランクレベルアップ問題集（いもす法）</a></b></li>
+                        <li><b>ヒント：</b>第9-1章で学んだ累積和の応用である「いもす法」の考え方が必要になります。</li>
+                    </ul>
+                    <ul>
+                        <li><b>挑戦のリンク: <a href="https://atcoder.jp/contests/abc038/tasks/abc038_c"
+                                    target="_blank">AtCoder ABC038 C - 単調増加</a></b></li>
+                        <li><b>ヒント：</b>第9-2章で学んだ「しゃくとり法」の典型問題です。「単調に増加する」という条件を満たす区間を効率よく数え上げましょう。</li>
+                    </ul>
+                </div>
+
+                <div class="page-content" id="chap10-1">
+                    <h1>10-1: 素数と約数</h1>
+                    <h2>整数の世界の「原子」</h2>
+                    <p>
+                        整数論は、一見すると複雑なアルゴリズムの世界とは異質に感じるかもしれません。しかし、多くのアルゴリズムが、この整数が持つ性質の上に成り立っています。特に「素数」は、整数の世界における「原子」のようなもので、全ての整数は素数の積で表すことができます。
+                    </p>
+
+                    <h3>素数判定：試し割り法</h3>
+                    <p>
+                        ある整数Nが素数かどうかを判定する最も基本的な方法は、2からN-1までの数で割り切れるか試すことです。しかし、少し工夫するともっと効率的に判定できます。Nが合成数であれば、必ず√N以下の約数を持つはずです。これを利用したのが以下のコードです。
+                    </p>
+                    <pre><code>import math
+
+def is_prime(n):
+    if n < 2:
+        return False
+    # 2から√nまでを試す
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0:
+            return False # 割り切れたら素数ではない
+    return True
+
+print(is_prime(17)) # True
+print(is_prime(18)) # False
+</code></pre>
+
+                    <h3>約数列挙</h3>
+                    <p>
+                        ある整数Nの約数を全て列挙する場合も、√Nまでの探索で十分です。なぜなら、dがNの約数であれば、N/dも必ず約数になるからです。
+                    </p>
+                    <pre><code>def get_divisors(n):
+    divisors = []
+    # 1から√nまでを試す
+    for i in range(1, int(n**0.5) + 1):
+        if n % i == 0:
+            divisors.append(i)
+            # n/i が i と異なる場合のみ追加（平方数の重複を防ぐ）
+            if i*i != n:
+                divisors.append(n // i)
+    divisors.sort() # 昇順に並べる
+    return divisors
+
+print(get_divisors(36)) # [1, 2, 3, 4, 6, 9, 12, 18, 36]
+</code></pre>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】素数判定</h3>
+                    <blockquote>
+                        入力された整数<code>N</code>が素数なら "Prime"、そうでなければ "Not Prime" と表示するプログラムを作成してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>import math
+
+def is_prime(n):
+    if n < 2: return False
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0: return False
+    return True
+
+N = int(input())
+if is_prime(N):
+    print("Prime")
+else:
+    print("Not Prime")
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】完全数</h3>
+                    <blockquote>
+                        自分自身を除く約数の和が、自分自身と等しくなる自然数を「完全数」といいます。入力された整数<code>N</code>が完全数かどうかを判定してください。例えば、6の約数は1,2,3,6で、1+2+3=6なので6は完全数です。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>def get_divisors(n):
+    divisors = []
+    for i in range(1, int(n**0.5) + 1):
+        if n % i == 0:
+            divisors.append(i)
+            if i*i != n: divisors.append(n // i)
+    return divisors
+
+N = int(input())
+divs = get_divisors(N)
+# 自分自身を除く約数の和
+sum_of_divs = sum(divs) - N 
+
+if sum_of_divs == N:
+    print("Yes")
+else:
+    print("No")
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題3】エラトステネスのふるい</h3>
+                    <blockquote>
+                        N以下の素数をすべて列挙するアルゴリズム「エラトステネスのふるい」を実装してください。これは、2から順に、素数を見つけたらその倍数をすべてリストから消していく、という操作を繰り返します。
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong> 長さN+1のブール型配列 `is_prime`
+                            を用意し、最初はすべてTrueにします。2から順に見ていき、`is_prime[i]`がTrueなら、iは素数なので、iの倍数(2i, 3i,
+                            ...)をすべてFalseにしていきます。</p>
+                        <pre><code>def sieve(n):
+    is_prime = [True] * (n + 1)
+    is_prime[0] = is_prime[1] = False
+    for p in range(2, int(n**0.5) + 1):
+        if is_prime[p]:
+            for i in range(p*p, n + 1, p):
+                is_prime[i] = False
+    
+    primes = []
+    for i in range(n + 1):
+        if is_prime[i]:
+            primes.append(i)
+    return primes
+
+N = int(input())
+print(sieve(N))
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap10-2">
+                    <h1>10-2: 合同式と逆元</h1>
+                    <h2>巨大な数を「時計の世界」で考える</h2>
+                    <p>
+                        競技プログラミングでは、「答えを 1,000,000,007 (10<sup>9</sup>+7)
+                        で割った余りを出力してください」という問題が頻出します。これは、答えが非常に大きな数になり、通常の変数型では扱いきれないためです。
+                    </p>
+                    <p>
+                        この「余りの世界」で計算を正しく行うための道具が<strong>合同式</strong>です。<code>a ≡ b (mod m)</code>
+                        は、「aをmで割った余りと、bをmで割った余りが等しい」ことを意味します。
+                    </p>
+                    <p>足し算、引き算、掛け算は、途中の計算で余りを取っても最終結果は変わりません。</p>
+                    <pre><code>MOD = 10**9 + 7
+a = 10**9
+b = 10**9
+
+# (a + b) % MOD は ((a % MOD) + (b % MOD)) % MOD と同じ
+print((a + b) % MOD)
+# ((a % MOD) + (b % MOD)) % MOD を計算
+a_mod = a % MOD
+b_mod = b % MOD
+print((a_mod + b_mod) % MOD)
+</code></pre>
+
+                    <h3>割り算はどうする？ → 逆元の登場</h3>
+                    <p>
+                        割り算 <code>a / b</code> は、単純に余りを取ることができません。そこで登場するのが<strong>モジュラ逆元</strong>です。
+                        数 <code>b</code> の逆元 <code>b<sup>-1</sup></code> とは、<code>b * b<sup>-1</sup> ≡ 1 (mod m)</code>
+                        となる数のことです。
+                        これを使うと、割り算を掛け算に変換できます。
+                    </p>
+                    <p><code>a / b (mod m)  ≡  a * b<sup>-1</sup> (mod m)</code></p>
+                    <p>
+                        <code>m</code>が素数のとき、<strong>フェルマーの小定理</strong>より
+                        <code>b<sup>m-2</sup> ≡ b<sup>-1</sup> (mod m)</code>
+                        となることが知られています。Pythonの<code>pow(b, m-2, m)</code>を使えば、この逆元を高速に計算できます。
+                    </p>
+                    <pre><code>MOD = 10**9 + 7
+a = 100
+b = 5
+
+# 100 / 5 を mod の世界で計算する
+# bの逆元を計算
+b_inv = pow(b, MOD - 2, MOD)
+
+# a * (bの逆元) を計算
+ans = (a * b_inv) % MOD
+print(ans) # 20
+</code></pre>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】巨大な掛け算</h3>
+                    <blockquote>
+                        2つの整数 A, B が与えられます。A * B を 10<sup>9</sup>+7 で割った余りを計算してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>A, B = map(int, input().split())
+MOD = 10**9 + 7
+ans = (A % MOD) * (B % MOD) % MOD
+print(ans)
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】巨大なべき乗</h3>
+                    <blockquote>
+                        2つの整数 A, B が与えられます。A<sup>B</sup> を 10<sup>9</sup>+7
+                        で割った余りを計算してください。<code>pow(A, B, MOD)</code>を使うと高速に計算できます。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>A, B = map(int, input().split())
+MOD = 10**9 + 7
+print(pow(A, B, MOD))
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題3】割り算の実行</h3>
+                    <blockquote>
+                        2つの整数 A, B が与えられます。A / B を 10<sup>9</sup>+7 で割った余りを計算してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <pre><code>A, B = map(int, input().split())
+MOD = 10**9 + 7
+
+# Bの逆元を計算
+B_inv = pow(B, MOD - 2, MOD)
+ans = (A * B_inv) % MOD
+print(ans)
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap10-3">
+                    <h1>10-3: 組み合わせ(nCr)</h1>
+                    <h2>選び方の総数を数え上げる</h2>
+                    <p>
+                        「n個の異なるものから、r個を選ぶ方法は何通りか？」これを計算するのが組み合わせ、通称 <strong>nCr</strong> です。
+                        公式は <code>n! / (r! * (n-r)!)</code> です。
+                    </p>
+                    <p>
+                        しかし、これも数が非常に大きくなるため、「余りをとってください」と指示されることがほとんどです。
+                        そこで、前章で学んだ逆元が活躍します。
+                    </p>
+                    <p><code>nCr (mod m) ≡ n! * (r!)<sup>-1</sup> * ((n-r)!)<sup>-1</sup> (mod m)</code></p>
+                    <p>
+                        この計算を効率的に行うには、あらかじめ<code>1!</code>から<code>n!</code>までの階乗とその逆元をテーブルとして計算しておくのが定石です。
+                    </p>
+
+                    <h3>nCr (mod m) の高速計算</h3>
+                    <pre><code>MOD = 10**9 + 7
+MAX_N = 2 * 10**5 # 問題に応じて設定
+
+# 階乗テーブル
+fact = [1] * (MAX_N + 1)
+# 逆元階乗テーブル
+inv_fact = [1] * (MAX_N + 1)
+
+# 階乗テーブルを作成
+for i in range(1, MAX_N + 1):
+    fact[i] = (fact[i-1] * i) % MOD
+
+# N! の逆元を計算 (MOD-2乗)
+inv_fact[MAX_N] = pow(fact[MAX_N], MOD - 2, MOD)
+
+# 逆元階乗テーブルを逆順に作成
+# (i-1)!^-1 = i!^-1 * i を利用
+for i in range(MAX_N, 0, -1):
+    inv_fact[i-1] = (inv_fact[i] * i) % MOD
+
+# nCr を計算する関数
+def nCr_mod(n, r):
+    if r < 0 or r > n:
+        return 0
+    # n! * (r!)^-1 * (n-r)!^-1
+    numerator = fact[n]
+    denominator = (inv_fact[r] * inv_fact[n-r]) % MOD
+    return (numerator * denominator) % MOD
+
+# 例：10C3 を計算
+print(nCr_mod(10, 3)) # 120
+</code></pre>
+                    <p>この前計算を一度O(N)で行っておけば、nCrの問い合わせにO(1)で答えられます。</p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】パスカルの三角形</h3>
+                    <blockquote>
+                        nCr には <code>nCr = n-1Cr-1 + n-1Cr</code> という性質があります。これを利用して、10C3 を計算してみてください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <p><strong>考え方:</strong> DP（動的計画法）でパスカルの三角形を計算します。<code>C[i][j]</code> を iCj の値とします。</p>
+                        <pre><code>N = 10
+R = 3
+C = [[0] * (N + 1) for _ in range(N + 1)]
+for i in range(N + 1):
+    C[i][0] = 1
+    for j in range(1, i + 1):
+        C[i][j] = C[i-1][j-1] + C[i-1][j]
+print(C[N][R])
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】グリッドの最短経路</h3>
+                    <blockquote>
+                        縦Hマス、横Wマスのグリッドがあります。左上から右下まで、右か下にしか進めないとき、最短経路は何通りありますか？
+                    </blockquote>
+                    <details>
+                        <summary>ヒントと解答例</summary>
+                        <p><strong>考え方:</strong>
+                            右にW回、下にH回、合計H+W回移動する必要があります。このH+W回の移動のうち、どのH回で下に進むか（あるいはどのW回で右に進むか）を選ぶ組み合わせの数に等しくなります。つまり、(H+W)C(H)
+                            または (H+W)C(W) です。</p>
+                        <pre><code># 上記の nCr_mod 関数が定義されているとする
+H, W = map(int, input().split())
+ans = nCr_mod(H + W - 2, H - 1) # (0,0)から(H-1,W-1)までなので
+print(ans)
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="part10-ex">
+                    <h1>10-E: 部末演習</h1>
+                    <h2>整数論と組み合わせの総仕上げ</h2>
+                    <p>
+                        第10部、お疲れ様でした！目に見えない「数の性質」を操るテクニックを学びました。これらは、特に数え上げ問題で絶大な力を発揮します。
+                    </p>
+                    <hr>
+                    <h3>【演習問題1】素因数分解</h3>
+                    <blockquote>
+                        与えられた整数 N を素因数分解し、<code>{素因数: 指数, ...}</code> の形式の辞書として出力してください。
+                    </blockquote>
+                    <p><strong>入力例:</strong> 72</p>
+                    <p><strong>出力例:</strong> {2: 3, 3: 2} (72 = 2<sup>3</sup> * 3<sup>2</sup>)</p>
+                    <details>
+                        <summary>思考プロセスと解答例</summary>
+                        <p><strong>考え方:</strong>
+                        <ol>
+                            <li>2から√Nまで、順番に割れるだけ割っていきます。</li>
+                            <li>割れた回数をカウントします。</li>
+                            <li>最後にNが1より大きい数で残っていたら、その数自身も素因数です。</li>
+                        </ol>
+                        </p>
+                        <pre><code>def prime_factorize(n):
+    factors = {}
+    temp = n
+    for i in range(2, int(n**0.5) + 1):
+        if temp % i == 0:
+            count = 0
+            while temp % i == 0:
+                count += 1
+                temp //= i
+            factors[i] = count
+    
+    if temp != 1:
+        factors[temp] = 1
+        
+    return factors
+
+N = int(input())
+print(prime_factorize(N))
+</code></pre>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【演習問題2】プレゼントの選び方</h3>
+                    <blockquote>
+                        N種類のプレゼントが1つずつあります。この中からK個以上を選ぶ方法は何通りありますか？答えを 10<sup>9</sup>+7 で割った余りを求めてください。
+                    </blockquote>
+                    <details>
+                        <summary>思考プロセスと解答例</summary>
+                        <p><strong>考え方:</strong>
+                            K個以上選ぶ方法は、「K個選ぶ方法」+「K+1個選ぶ方法」+ ... +「N個選ぶ方法」の総和です。
+                            つまり、<code>NCK + NCK+1 + ... + NCN</code> を計算します。
+                            ループを回して、各nCrを足し合わせればOKです。nCrの計算には、本章で学んだ高速な実装を使いましょう。
+                        </p>
+                        <pre><code># 上記の nCr_mod 関数一式が定義されているとする
+N, K = map(int, input().split())
+MOD = 10**9 + 7
+
+total_ways = 0
+for r in range(K, N + 1):
+    total_ways = (total_ways + nCr_mod(N, r)) % MOD
+
+print(total_ways)
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="challenge10">
+                    <h1>挑戦：発展的な組み合わせ問題</h1>
+                    <p>
+                        おめでとうございます！整数論と組み合わせ計算という、競技プログラミングの強力な武器を手にしました。
+                        これらは、AtCoderのD問題以上で頻出する「数え上げ問題」を解くための必須知識です。
+                    </p>
+                    <p>
+                        このレベルの問題は、単純にnCrを計算するだけでなく、「どの場面で組み合わせ計算を使うのか」を見抜く洞察力が試されます。
+                    </p>
+                    <ul>
+                        <li><b>挑戦のリンク: <a href="https://atcoder.jp/contests/abc132/tasks/abc132_d"
+                                    target="_blank">AtCoder ABC132 D - Blue and Red Balls</a></b></li>
+                        <li><b>ヒント：</b>K個の青いボールをまず配置し、その隙間に赤いボールを入れていく、という考え方をします。i回ボールを選ぶ問題では、「N-K+1個の場所からi個を選ぶ組み合わせ」と「K-1個の場所からi-1個を選ぶ組み合わせ」の積で計算できます。
+                        </li>
+                    </ul>
+                    <ul>
+                        <li><b>挑戦のリンク: <a
+                                    href="https://paiza.jp/works/mondai/a_rank_level_up_problems/a_rank_calculation_step4"
+                                    target="_blank">Paiza Aランクレベルアップ問題集（組み合わせ）</a></b></li>
+                        <li><b>ヒント：</b>問題文をよく読むと、組み合わせ(nCr)の計算に帰着させることができます。MODを取ることを忘れないようにしましょう。</li>
+                    </ul>
+                </div>
+
+                <div class="page-content" id="chap11-1">
+                    <h1>11-1: ヒューリスティックとは</h1>
+                    <h2>「最善の解」ではなく「満足できる解」を探す旅</h2>
+                    <p>
+                        おめでとうございます！あなたはついに、本書の最終章「ヒューリスティック」にたどり着きました。
+                        これまで私たちが学んできたダイクストラ法や動的計画法は、決められた手順に従えば必ず「唯一の正しい答え（厳密解）」にたどり着くことができる「アルゴリズム」でした。
+                    </p>
+                    <p>
+                        しかし、世の中には問題が複雑すぎて、厳密解を求めるのにスーパーコンピュータを使っても数百年、数万年かかってしまうような問題が存在します。代表的な例が「巡回セールスマン問題（TSP）」です。全ての都市を一度ずつ訪れて出発点に戻ってくるとき、総移動距離が最短になる経路はどれか、という問題です。都市の数が増えると、組み合わせが爆発的に増え、全探索は不可能になります。
+                    </p>
+                    <p>
+                        このような「厳密解を求めるのは現実的ではない問題」に対して、「<strong>必ずしも最適ではないかもしれないが、実用上十分満足できる『良い解（近似解）』を、現実的な時間内に見つける</strong>」ための手法。それが<strong>ヒューリスティック</strong>です。
+                    </p>
+                    <p>
+                        ヒューリスティックの基本は、「現在の解」を評価する<strong>評価関数</strong>を定め、その評価値をより良くするための「改善操作（近傍探索）」を繰り返す、というシンプルなものです。
+                    </p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】厳密解法 vs ヒューリスティック</h3>
+                    <blockquote>
+                        「100人の中から最も背の高い人を1人見つける」という問題は、厳密解法とヒューリスティック解法のどちらで解くべきですか？その理由も説明してください。
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <p><strong>答え:</strong> 厳密解法で解くべきです。<br><strong>理由:</strong>
+                            100人全員の身長を順番に確認し、最大値を記録すれば、計算時間も非常に短く、かつ確実に「最も背の高い人」という唯一の正解を見つけることができるからです。ヒューリスティックを使うメリットがありません。
+                        </p>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】評価関数を考える</h3>
+                    <blockquote>
+                        「巡回セールスマン問題」において、ある経路（解）の良し悪しを判断するための「評価関数」は、どのように定義すべきでしょうか？
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <p><strong>答え:</strong>
+                            その経路の「総移動距離」です。評価値（総移動距離）が小さければ小さいほど「良い解」であると定義します。ヒューリスティックの目的は、この評価値を最小化することになります。</p>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題3】改善操作を考える</h3>
+                    <blockquote>
+                        「巡回セールスマン問題」で、現在の経路（解）を少しだけ変更して別の経路を作る「改善操作」には、どのようなものが考えられるでしょうか？
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <p><strong>答え:</strong> 例えば、「経路のうち、隣接する2都市の訪問順を入れ替える（2-opt）」、「ある1つの都市を、別の場所に挿入してみる」などの操作が考えられます。
+                        </p>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap11-2">
+                    <h1>11-2: 貪欲法と山登り法</h1>
+                    <h2>より良い解へ、一歩ずつ進む</h2>
+                    <p>ヒューリスティックの最も基本的な考え方が、この章で学ぶ「貪欲法」と「山登り法」です。</p>
+
+                    <h3>貪欲法：局所的な最善手の積み重ね</h3>
+                    <p>
+                        <strong>貪欲法 (Greedy Algorithm)</strong>
+                        は、「その場その場で、自分にとって最も利益が大きい選択肢を取り続ける」という戦略です。一度決定した選択は、後から変更しません。非常にシンプルで実装も簡単なのが特徴です。
+                    </p>
+                    <pre><code># 問題：価値が(100, 120, 80)、重さが(10, 30, 20)の品物がある。
+# 重さ50のナップサックに、分割可能で詰め込む場合。
+items = [(100, 10), (120, 30), (80, 20)] # (価値, 重さ)
+# 「価値/重さ」の比率でソートするのが貪欲戦略
+# 比率: 10, 4, 4 -> 価値100の品物が一番「お得」
+items.sort(key=lambda x: x[0]/x[1], reverse=True)
+# ... この後、比率の高いものから順に詰められるだけ詰めていく
+</code></pre>
+
+                    <h3>山登り法：近傍探索による改善</h3>
+                    <p>
+                        <strong>山登り法 (Hill Climbing)</strong>
+                        は、現在の解（経路全体など）を少しだけ変更（近傍探索）してみて、もし評価値が改善されるなら、その変更を採用するという動きを繰り返します。
+                    </p>
+                    <h4>【貪欲法との違い】</h4>
+                    <p>
+                        貪欲法は、個々の部品を選ぶ際に「局所的」に最適なものを選び、それを積み上げて一つの解を作ります。<b>一度選んだ部品は変更しません。</b><br>
+                        一方、山登り法は、まず<b>一つの完成した解（例：ランダムな経路）からスタート</b>し、その解全体を少しずつ変化させて、より良い「完成品の解」へと改善していきます。
+                    </p>
+                    <p>
+                        例えるなら、カレーの具材を選ぶとき、貪欲法は「じゃがいも！」「にんじん！」と一個ずつ決めて鍋に入れていきます。山登り法は、まず適当に具材を入れてカレーを一杯作り、「このカレーからじゃがいもを抜いて、代わりにブロッコリーを入れたらもっと美味しくなるかな？」と、完成品を改良していくイメージです。
+                    </p>
+                    <p>
+                        しかし、山登り法には「近くの丘（局所最適解）の頂上に着くと、そこから動けなくなり、本当に高い山（大域的最適解）にたどり着けない」という大きな弱点があります。
+                    </p>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】貪欲法の限界</h3>
+                    <blockquote>
+                        アメリカの硬貨（1, 5, 10,
+                        25セント）で30セントを支払う場合、貪欲法（額面の大きい硬貨から使う）で支払うと、25セント+5セントの2枚が最適です。しかし、もし「20セント硬貨」が存在し、「1, 5, 10, 20,
+                        25セント」の硬貨で40セントを支払う場合、貪欲法は最適でない解を導きます。それはどのような解で、最適解は何ですか？
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <p><strong>貪欲法による解:</strong> 25セント + 10セント + 5セント の<b>3枚</b>。<br>
+                            <strong>最適解:</strong> 20セント + 20セント の<b>2枚</b>。<br>このように、貪欲法は必ずしも最適解を導くとは限りません。
+                        </p>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【小問題2】山登り法の弱点</h3>
+                    <blockquote>
+                        あなたが山の頂上を目指す登山家だとします。「常に今いる場所より高い方へしか進めない」という山登り法のルールに従うと、どのような場合に本当の山頂（最も高い場所）にたどり着けなくなりますか？
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <p>答え:
+                            スタート地点が、本当の山頂（富士山）ではなく、その麓にある小さな丘（高尾山）だった場合。その丘の頂上に着いた時点で、周りはすべて低い土地になるため、ルール上それ以上移動できなくなり、富士山にたどり着くことができなくなります。
+                        </p>
+                    </details>
+                </div>
+
+                <div class="page-content" id="chap11-3">
+                    <h1>11-3: 焼きなまし法</h1>
+                    <h2>局所解の罠から脱出する「勇気」</h2>
+                    <p>
+                        <strong>焼きなまし法 (Simulated Annealing, SA)</strong>
+                        は、山登り法の「丘を登りきると動けなくなる」という弱点を克服するために考案された、より強力なヒューリスティックです。
+                    </p>
+                    <p>
+                        その最大の特徴は、解を改善する動きに加えて、「<strong>ある確率で、あえて改悪する手も受け入れる</strong>」という点にあります。
+                    </p>
+
+                    <h4>【山登り法との違い】</h4>
+                    <p>
+                        山登り法は、評価値が「良くなる」場合にしか移動しませんでした。つまり、絶対に坂道を下ることはありませんでした。<br>
+                        焼きなまし法は、このルールを少し緩めます。良くなる移動は常に受け入れますが、<b>悪くなる移動（改悪）も、ある確率で許容します。</b>
+                    </p>
+                    <p>
+                        この「改悪を受け入れる確率」は、アルゴリズムの進行状況を示す「<strong>温度</strong>」というパラメータに依存します。<br>
+                        ・探索の序盤（<strong>温度が高い</strong>）:
+                        改悪を<b>高い確率</b>で受け入れる。これにより、局所最適解の丘から勇気をもって下り、別の高い山を探しに行くことができます。<br>
+                        ・探索の終盤（<strong>温度が低い</strong>）: 改悪を<b>ほとんど受け入れなくなる</b>。これにより、最終的に見つけた最も高い山の頂上へと、着実に登り詰めていきます。
+                    </p>
+                    <p>この振る舞いが、金属を一度高温に熱してからゆっくり冷やすことで安定した構造を作る「焼きなまし」のプロセスに似ていることから、この名が付きました。</p>
+                    <pre><code>import math
+import random
+
+# (中略)
+for t in range(TIME_LIMIT):
+    # 近傍解を一つ生成
+    new_score = ...
+    
+    # 常に改善する場合は採用
+    if new_score > current_score:
+        current_score = new_score
+    else:
+        # 温度に応じて、改悪を確率的に受け入れる
+        # 温度は時間と共に下がる (例: temp = 30.0 * (1.0 - t / TIME_LIMIT))
+        probability = math.exp((new_score - current_score) / temp)
+        if random.random() < probability:
+            current_score = new_score
+</code></pre>
+
+                    <h2>やってみよう！知識を固める小問題</h2>
+                    <h3>【小問題1】焼きなまし法の利点</h3>
+                    <blockquote>
+                        山登り法と比較した、焼きなまし法の最大の利点は何ですか？
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <p>答え:
+                            局所最適解に陥りにくい点です。山登り法は一度丘の頂上に着くと動けませんが、焼きなまし法は「温度」が高い序盤に確率的にスコアが悪い方へ移動することで、その丘から脱出し、より大域的な最適解を探しに行くことができます。
+                        </p>
+                    </details>
+                    <h3 style="margin-top: 30px;">【小問題2】温度の役割</h3>
+                    <blockquote>
+                        焼きなまし法において、「温度」が高い状態と低い状態では、アルゴリズムの振る舞いはどのように変わりますか？
+                    </blockquote>
+                    <details>
+                        <summary>解答例</summary>
+                        <p><strong>温度が高い（序盤）:</strong>
+                            改悪手でも高い確率で採用するため、解が多様に変化し、広範囲を探索する（多様性重視）。<br>
+                            <strong>温度が低い（終盤）:</strong> 改悪手をほとんど採用しなくなり、良い解をさらに良くする動きに集中する（収束性重視）。
+                        </p>
+                    </details>
+                </div>
+
+                <div class="page-content" id="part11-ex">
+                    <h1>11-E: 部末演習</h1>
+                    <h2>近似解法の世界へ</h2>
+                    <p>
+                        第11部、お疲れ様でした！厳密解を求めるアルゴリズムとは一味違う、ヒューリスティックの世界を体験しました。特に、AtCoderのAHC(Heuristic)コンテストなどでは、この部の知識が直接スコアに結びつきます。
+                    </p>
+                    <hr>
+                    <h3>【演習問題1】ビームサーチ</h3>
+                    <blockquote>
+                        山登り法は、常に1つの最良の解のみを保持し続けました。しかし、これでは有望そうな別の候補を捨ててしまうことになります。そこで、「常に有望な解をK個保持し続け、そのK個それぞれから近傍を探索し、次の世代の有望なK個を選ぶ」という手法が考えられます。この手法を何と呼びますか？
+                    </blockquote>
+                    <details>
+                        <summary>解答</summary>
+                        <p>答え: <strong>ビームサーチ (Beam Search)</strong><br>
+                            ビーム幅をK=1にしたものが山登り法と考えることもできます。ビーム幅を広げることで、山登り法よりも多様な探索が可能になります。
+                        </p>
+                    </details>
+
+                    <h3 style="margin-top: 30px;">【演習問題2】巡回セールスマン問題の実装</h3>
+                    <blockquote>
+                        平面上にN個の都市の座標 (x, y)
+                        が与えられます。全ての都市を1度ずつ訪れて出発点に戻る経路のうち、総移動距離ができるだけ短くなるような経路を一つ見つけてください。評価関数と改善操作（近傍探索）を定義し、山登り法または焼きなまし法で実装してみましょう。
+                    </blockquote>
+                    <details>
+                        <summary>思考プロセスと解答例</summary>
+                        <p><strong>考え方:</strong>
+                        <ol>
+                            <li><strong>解の表現:</strong> 都市を訪れる順番のリストで表現します。例: `[0, 3, 1, 2, 4]`</li>
+                            <li><strong>評価関数:</strong> 経路リストを元に、総移動距離を計算する関数を作成します。2点間の距離はユークリッド距離
+                                <code>sqrt((x1-x2)^2 + (y1-y2)^2)</code> を使います。
+                            </li>
+                            <li><strong>近傍探索:</strong>
+                                現在の経路リストから、ランダムに2点を選んでその順番を入れ替える(swap)操作が最もシンプルで効果的です。</li>
+                            <li><strong>探索アルゴリズム:</strong>
+                                上記の部品を使って、山登り法か焼きなまし法のメインループを実装します。時間や繰り返し回数を決めて、その間探索を続けます。</li>
+                        </ol>
+                        </p>
+                        <pre><code>import random
+import math
+
+def calculate_total_distance(tour, cities):
+    dist = 0
+    for i in range(len(tour)):
+        city1 = cities[tour[i]]
+        city2 = cities[tour[(i + 1) % len(tour)]]
+        dist += math.sqrt((city1[0] - city2[0])**2 + (city1[1] - city2[1])**2)
+    return dist
+
+# (焼きなまし法のメインループは省略)
+# 1. 初期解を生成 (例: random.shuffle)
+# 2. 制限時間までループ
+# 3.   近傍を生成 (ランダムに2点swap)
+# 4.   スコアを比較し、焼きなまし法のルールに従って採用/不採用を決定
+# 5.   温度を少し下げる
+</code></pre>
+                    </details>
+                </div>
+
+                <div class="page-content" id="final-challenge">
+                    <h1>最終問題：Sランク & AtCoder(E)への挑戦</h1>
+                    <p>
+                        ついに、この長い旅の終着点が見えてきました。あなたは、基本的なプログラミングから始まり、データ構造、各種アルゴリズム、そしてヒューリスティックに至るまで、問題解決のための膨大な知識と武器を身につけました。
+                    </p>
+                    <p>
+                        今のあなたなら、Paizaスキルチェックの最高峰「Sランク」や、AtCoderのコンテストで多くの人が壁と感じる「E問題」にも、臆することなく立ち向かうことができるはずです。
+                        これらの問題は、単一のアルゴリズムを知っているだけでは解けません。
+                    </p>
+                    <ul>
+                        <li>問題の本質を見抜き、どのアルゴリズムが使えるか考察する力</li>
+                        <li>複数のアルゴリズムやデータ構造を組み合わせる応用力</li>
+                        <li>制約から計算量を正確に見積もり、最適な解法を選択する判断力</li>
+                    </ul>
+                    <p>
+                        これまでに学んだ全ての知識を総動員して、ぜひ挑戦してみてください。ここから先は、知識を学ぶフェーズから、知識を「どう使うか」を磨くフェーズです。数々の難問を解き明かし、本当の「問題解決能力」を手に入れる旅は、まだ始まったばかりです。
+                    </p>
+                    <p>
+                        健闘を祈ります！
+                    </p>
+                    <ul>
+                        <li><b>挑戦のリンク: <a
+                                    href="https://paiza.jp/works/mondai/s_rank_level_up_problems/s_rank_level_up_problems__dijkstra_graph_map"
+                                    target="_blank">Paiza Sランクレベルアップ問題集</a></b></li>
+                        <li><b>挑戦のリンク: <a href="https://atcoder.jp/contests/typical90" target="_blank">AtCoder
+                                    競プロ典型90問</a></b>
+                            (D問題以降に、E問題レベルの良問が多数あります)</li>
+                    </ul>
+                </div>
+                <div class="page-content" id="ap-a">
+                    <h1>A: Pythonicな小技集</h1>
+                    <h2>知っていると少しだけ世界が広がるテクニック</h2>
+                    <p>
+                        ここでは、教科書本編で紹介しきれなかったものの、知っているとPythonでのプログラミングがもっと楽しく、効率的になる「小ネタ」を集めました。
+                    </p>
+
+                    <h3>A-1: Zen of Pythonを味わう (`import this`)</h3>
+                    <p>
+                        Pythonには、その設計思想や哲学をまとめた「Zen of Python」と呼ばれる19か条の詩があります。Pythonの対話モード（REPL）や、スクリプトで `import this`
+                        と実行すると、この詩を読むことができます。
+                    </p>
+                    <pre><code>import this</code></pre>
+                    <blockquote>
+                        The Zen of Python, by Tim Peters<br><br>
+                        Beautiful is better than ugly.<br>
+                        Explicit is better than implicit.<br>
+                        Simple is better than complex.<br>
+                        Complex is better than complicated.<br>
+                        ...
+                    </blockquote>
+                    <p>「醜いより美しいほうがいい」「暗黙的より明示的がいい」「複雑であるよりシンプルなほうがいい」など、簡潔で読みやすいコードを書くための指針が詰まっています。迷ったときに立ち返る原点として、心に留めておくと良いでしょう。
+                    </p>
+
+                    <h3>A-2: f-stringの便利なデバッグ術 (`f"{var=}"`)</h3>
+                    <p>
+                        Python 3.8以降では、f-stringの中で変数名の後に <code>=</code>
+                        を付けると、変数名とその値を簡単に出力できるデバッグ用の書式が追加されました。`print`デバッグが非常にはかどります。
+                    </p>
+                    <pre><code>user_name = "Taro"
+user_age = 25
+
+# 従来のf-string
+print(f"user_name: {user_name}, user_age: {user_age}")
+
+# Python 3.8+ のデバッグ術
+print(f"{user_name=}, {user_age=}")
+# 出力: user_name='Taro', user_age=25
+</code></pre>
+
+                    <h3>A-3: `assert`でデバッグを効率化する</h3>
+                    <p>
+                        <code>assert 条件式, "エラーメッセージ"</code> は、開発中に「この変数は絶対にこの条件を満たしているはずだ」という仮定をコードに埋め込むための機能です。もし条件式が
+                        `False`
+                        になった場合、`AssertionError`を発生させてプログラムを停止させます。これにより、バグの早期発見に繋がります。
+                    </p>
+                    <pre><code>def get_discount_rate(age):
+    assert age >= 0, "年齢が負の値になっています"
+    # ...処理が続く
+    
+get_discount_rate(-10) # AssertionError: 年齢が負の値になっています
+</code></pre>
+                    <p>注意：`assert`は本番環境では無効化されることがあるため、ユーザー入力のバリデーションなどには使わず、あくまで開発中のデバッグ補助として使いましょう。</p>
+
+                    <h3>A-4: TruthyとFalsy ～Pythonの柔軟な真偽値判定～</h3>
+                    <p>
+                        Pythonでは、`if`文の条件式に真偽値(`True`/`False`)以外も使えます。空のコンテナや数値の0は`False`として、中身のあるコンテナや0以外の数値は`True`として扱われます。
+                    </p>
+                    <ul>
+                        <li><strong>Falsy (Falseと評価される値):</strong> `None`, `False`, 数値の `0` や `0.0`, 空の文字列 `""`, 空のリスト
+                            `[]`, 空のタプル `()`, 空の辞書 `{}`, 空のセット `set()`
+                        </li>
+                        <li><strong>Truthy (Trueと評価される値):</strong> 上記以外のほぼ全て</li>
+                    </ul>
+                    <pre><code>my_list = []
+if my_list: # my_listは空なのでFalseと判定される
+    print("リストには中身があります")
+else:
+    print("リストは空です") # こちらが表示される
+</code></pre>
+                    <p>この性質を利用することで、`if len(my_list) > 0:` のような冗長な記述を `if my_list:` と簡潔に書くことができます。</p>
+
+                    <h3>A-5: REPLの最終兵器 `_`</h3>
+                    <p>
+                        Pythonの対話型コンソール(REPL)で作業しているとき、直前の実行結果をもう一度使いたい場面がよくあります。そんな時、アンダースコア `_`
+                        を使うと、直前の式の評価結果を呼び出すことができます。
+                    </p>
+                    <pre><code>>>> 123 * 456
+56088
+>>> _ + 12
+56100
+>>> print(f"答えは {_} です")
+答えは 56100 です
+</code></pre>
+                </div>
+
+                <div class="page-content" id="ap-b">
+                    <h1>B: キャリアパス ～そのスキル、どう活かす？～</h1>
+                    <h2>あなたが手にした「問題解決能力」の価値</h2>
+                    <p>本書を通して身につけた論理的思考力と実装力は、IT業界の様々な分野で高く評価される、非常に価値のあるスキルです。ここでは、そのスキルが具体的にどのようなキャリアに繋がるのかを紹介します。</p>
+
+                    <h3>1. ソフトウェアエンジニア</h3>
+                    <p>Webサービスやアプリケーションを開発する専門家です。GoogleやMetaといった巨大IT企業の採用試験では、まさに本書で学んだようなアルゴリズムとデータ構造の知識が直接問われます。なぜなら、数億人が利用するサービスのパフォーマンスは、効率的なアルゴリズムにかかっているからです。
+                    </p>
+                    <ul>
+                        <li><strong>活かせるスキル:</strong> 計算量を意識したAPI設計、大規模データを効率よく捌くデータ構造の選択、バグの少ないロジカルなコード実装能力。</li>
+                    </ul>
+
+                    <h3>2. データサイエンティスト / 機械学習エンジニア</h3>
+                    <p>膨大なデータから価値ある知見を引き出したり、AIモデルを構築したりする専門家です。数十ギガバイトにもなるデータを処理する際、非効率なコードは致命的です。計算量を意識し、高速なライブラリを使いこなす能力が求められます。
+                    </p>
+                    <ul>
+                        <li><strong>活かせるスキル:</strong> 大規模データの高速な前処理、アルゴリズムの思考法（モデルの内部構造の理解）、効率的なシミュレーションの実装。</li>
+                    </ul>
+
+                    <h3>3. クオンツ / 金融エンジニア</h3>
+                    <p>金融の世界で、数理モデルやアルゴリズムを駆使して市場分析や自動取引システムを開発する専門家です。1ミリ秒の遅れが莫大な損失に繋がる世界であり、極限まで高速化されたアルゴリズムが求められます。
+                    </p>
+                    <ul>
+                        <li><strong>活かせるスキル:</strong> 高速なアルゴリズムの実装力、DPやグラフ理論を用いたモデル化能力、正確無比な実装を保証する論理的思考力。</li>
+                    </ul>
+
+                    <h3>4. 競技プログラマ</h3>
+                    <p>問題解決の速度と正確さをスポーツのように競う人々です。本書で学んだ知識は、まさに競技プログラミングの土台そのものです。国内のAtCoderや、世界大会であるICPC、Google Code
+                        Jamなどで上位を目指すことで、その能力はさらに磨かれ、上記の専門職への道も大きく開かれます。</p>
+                    <ul>
+                        <li><strong>活かせるスキル:</strong> 本書で学んだ全ての知識。</li>
+                    </ul>
+                </div>
+
+                <div class="page-content" id="ap-c">
+                    <h1>C: AIへの招待 ～次の一歩へ～</h1>
+                    <h2>アルゴリズムとAIの深い関係</h2>
+                    <p>現代技術の中核であるAI（人工知能）や機械学習は、一見すると全く新しい分野に見えるかもしれません。しかし、その根底には、本書で学んできた「問題を数理的にモデル化し、最適な解を探す」というアルゴリズム的思考が流れています。
+                    </p>
+
+                    <h3>思考の類似性</h3>
+                    <p>
+                        例えば、ヒューリスティックの章で学んだ「評価関数を定義し、その値が良くなるように解を更新していく」という山登り法や焼きなまし法の考え方は、機械学習における「損失関数を定義し、勾配降下法によってその値が最小になるようにモデルのパラメータを更新していく」というプロセスと非常によく似ています。
+                    </p>
+                    <p>本書で培った「計算量を意識する感覚」や「問題を小さなタスクに分解する能力」は、AIという新しい分野を学ぶ上で、他の人にはない強力なアドバンテージになります。</p>
+
+                    <h3>次に学ぶべきPythonライブラリ</h3>
+                    <p>AI・データサイエンスの世界へ足を踏み入れるなら、以下の3つのライブラリは避けて通れません。本書の知識を土台に、ぜひ挑戦してみてください。</p>
+                    <ul>
+                        <li>
+                            <strong>NumPy (ナンパイ):</strong>
+                            Pythonで高速な数値計算を行うためのライブラリ。ベクトルや行列といった多次元配列を効率的に扱うことができ、科学技術計算やAI開発の基盤となっています。リスト内包表記よりさらに高速なデータ処理が可能です。
+                        </li>
+                        <li>
+                            <strong>Pandas (パンダス):</strong>
+                            Excelの表のような、行と列を持つデータを自在に操作するためのライブラリ。データの読み込み、欠損値の処理、集計、結合など、データ分析の前処理に必須のツールです。
+                        </li>
+                        <li>
+                            <strong>Scikit-learn (サイキット・ラーン):</strong>
+                            様々な機械学習アルゴリズムを手軽に利用できるようにしたライブラリ。回帰、分類、クラスタリングといった代表的な機械学習モデルを、統一されたインターフェースで試すことができます。
+                        </li>
+                    </ul>
+                </div>
+
+
+                <div class="page-content" id="ap-d">
+                    <h1>D: エラー早見表 ～PythonからのSOSを読み解く～</h1>
+                    <h2>エラーは友達、怖くない！</h2>
+                    <p>プログラミング学習中にエラーはつきものです。エラーメッセージはプログラムからの重要なヒント。意味を正しく理解し、迅速にバグを修正できるようになりましょう。</p>
+                    <table border="1" style="border-collapse: collapse; width: 100%;">
+                        <tr style="background-color: #f2f2f2;">
+                            <th style="padding: 8px;">エラー名</th>
+                            <th style="padding: 8px;">意味</th>
+                            <th style="padding: 8px;">主な原因と対策</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><code>SyntaxError</code></td>
+                            <td>構文エラー</td>
+                            <td style="padding: 8px;">文法が間違っている。<code>:</code>のつけ忘れ、括弧の閉じ忘れ、インデントの誤りなどを確認する。</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><code>IndentationError</code></td>
+                            <td>インデントエラー</td>
+                            <td style="padding: 8px;">インデント（字下げ）が正しくない。if文やfor文のブロックのインデントが揃っているか確認する。スペースとタブの混在にも注意。
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><code>NameError</code></td>
+                            <td>名前エラー</td>
+                            <td style="padding: 8px;">未定義の変数や関数を使おうとした。スペルミスがないか、変数に値を代入したかを確認する。</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><code>TypeError</code></td>
+                            <td>型エラー</td>
+                            <td style="padding: 8px;">
+                                異なるデータ型同士で不適切な操作を行った。例えば、文字列と数値を<code>+</code>で連結しようとしたなど。<code>int()</code>や<code>str()</code>による型変換が必要か確認する。
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><code>IndexError</code></td>
+                            <td>インデックスエラー</td>
+                            <td style="padding: 8px;">
+                                リストなどの範囲外のインデックスにアクセスしようとした。例えば、要素数5のリストに<code>list[5]</code>でアクセスしようとしたなど。インデックスは0から<code>len-1</code>まで。
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><code>KeyError</code></td>
+                            <td>キーエラー</td>
+                            <td style="padding: 8px;">
+                                辞書に存在しないキーでアクセスしようとした。キーのスペルミスがないか、あるいは<code>.get()</code>メソッドを使って安全にアクセスすることを検討する。</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><code>ValueError</code></td>
+                            <td>値エラー</td>
+                            <td style="padding: 8px;">
+                                関数の引数として、型は正しいが不適切な値が渡された。例えば、<code>int("abc")</code>のように数値に変換できない文字列を渡したなど。</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><code>ZeroDivisionError</code></td>
+                            <td>ゼロ除算エラー</td>
+                            <td style="padding: 8px;">数値を0で割ろうとした。割る数が0にならないか、事前にif文でチェックするなどの対策が必要。</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="page-content" id="ap-e">
+                    <h1>E: バグとの戦い方 ～デバッグの心構え～</h1>
+                    <h2>探偵のように、バグを追い詰めろ</h2>
+                    <p>エラーは出ないのに、なぜかプログラムが思った通りに動かない。「バグ」との戦いはプログラマの宿命です。ここでは、バグを効率的に発見し、修正するための基本的な考え方とテクニック（デバッグ手法）を解説します。
+                    </p>
+
+                    <h3>1. `print`デバッグ</h3>
+                    <p>
+                        最も原始的で、しかし最も強力なデバッグ手法です。怪しい箇所の前後やループの内部に<code>print</code>文を仕込み、変数の値が意図通りに変化しているか、あるいは特定の処理ブロックが実行されているかを確認します。
+                    </p>
+                    <pre><code>total = 0
+for i in range(1, 6):
+    print(f"ループ開始時: i={i}, total={total}") # printデバッグ
+    total += i
+    print(f"ループ終了時: i={i}, total={total}") # printデバッグ
+</code></pre>
+
+                    <h3>2. 具体例で考える（手でデバッグ）</h3>
+                    <p>
+                        「N=100だと分からないが、N=3ならどう動く？」というように、問題を極端に小さくした入力例を考え、その動きを紙と鉛筆でステップごとに手で追ってみます。これにより、自分の思考の前提がどこで間違っているのかを発見しやすくなります。特に、N=0,
+                        1のような境界値（コーナーケース）を試すことは非常に重要です。
+                    </p>
+
+                    <h3>3. 二分探索的デバッグ</h3>
+                    <p>
+                        バグがどこに潜んでいるか見当もつかない場合、コードの後半半分をコメントアウトして実行してみます。もし、それでもバグが再現するなら、バグは前半部分にあります。再現しないなら、後半部分です。このようにして、バグの潜む範囲を半分に狭めていくアプローチは非常に有効です。
+                    </p>
+
+                    <h3>4. ラバーダッキング (Rubber Ducky Debugging)</h3>
+                    <p>
+                        少し変わった、しかし驚くほど効果的な手法です。机の上にアヒルのおもちゃ（ラバーダック）を置き、そのアヒルに向かって、自分のコードが何をしているのかを一行ずつ、丁寧に声に出して説明します。「まず、この変数Nでループを回して…」と説明しているうちに、「あれ、ここはNじゃなくてN-1までじゃないか？」というように、自分の思考の矛盾や思い込みに気づくことができます。説明する相手は、同僚や友人、あるいは壁でも構いません。
+                    </p>
+                </div>
+            </div>
+
+            <div id="pagination">
+                <button id="prev-btn" class="pagination-btn">← 前へ</button>
+                <button id="next-btn" class="pagination-btn">次へ →</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="all-pages-content" style="display:none;">
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('sidebar');
+            const mainWrapper = document.getElementById('main-wrapper');
+            const internalToggle = document.getElementById('sidebar-toggle');
+            const flyoutToggle = document.getElementById('sidebar-flyout-toggle');
+            const headerTitle = document.getElementById('part-title');
+            const contentContainer = document.getElementById('content-container');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            const searchBox = document.getElementById('search-box');
+            const searchResults = document.getElementById('search-results');
+
+            const pages = Array.from(navLinks).map(link => {
+                const id = link.getAttribute('href').substring(1);
+                return document.getElementById(id);
+            }).filter(page => page !== null);
+
+            contentContainer.innerHTML = '';
+            pages.forEach(page => contentContainer.appendChild(page));
+
+            const navOrder = pages.map(page => page.id);
+
+            function setSidebarState(isClosed) {
+                sidebar.classList.toggle('closed', isClosed);
+                mainWrapper.classList.toggle('full-width', isClosed);
+                flyoutToggle.style.display = isClosed ? 'block' : 'none';
+            }
+
+            internalToggle.addEventListener('click', () => setSidebarState(true));
+            flyoutToggle.addEventListener('click', () => setSidebarState(false));
+
+            function navigateTo(key) {
+                if (!key || !document.getElementById(key)) {
+                    key = navOrder[0];
+                }
+                pages.forEach(p => { p.style.display = 'none'; });
+                navLinks.forEach(l => l.classList.remove('active'));
+
+                const targetPage = document.getElementById(key);
+                const activeLink = document.querySelector(`.nav-link[href="#${key}"]`);
+
+                if (targetPage) {
+                    targetPage.style.display = 'block';
+                }
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                    let fullTitle = activeLink.textContent;
+                    let displayTitle = fullTitle.includes(': ') ? fullTitle.split(': ').slice(1).join(': ') : fullTitle;
+                    headerTitle.textContent = displayTitle;
+
+                    let parent = activeLink.closest('details');
+                    if (parent && !parent.open) {
+                        parent.open = true;
+                    }
+                }
+
+                updatePagination(key);
+                if (window.location.hash !== '#' + key) {
+                    window.history.pushState(null, '', '#' + key);
+                }
+                window.scrollTo(0, 0);
+            }
+
+            function updatePagination(key) {
+                const currentIndex = navOrder.indexOf(key);
+                prevBtn.disabled = currentIndex <= 0;
+                nextBtn.disabled = currentIndex >= navOrder.length - 1;
+                if (!prevBtn.disabled) prevBtn.dataset.target = navOrder[currentIndex - 1];
+                if (!nextBtn.disabled) nextBtn.dataset.target = navOrder[currentIndex + 1];
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateTo(link.getAttribute('href').substring(1));
+                });
+            });
+
+            prevBtn.addEventListener('click', (e) => { if (!e.target.disabled) navigateTo(e.target.dataset.target); });
+            nextBtn.addEventListener('click', (e) => { if (!e.target.disabled) navigateTo(e.target.dataset.target); });
+
+            function onUrlChange() {
+                const hash = window.location.hash.substring(1);
+                navigateTo(hash || navOrder[0]);
+            }
+
+            window.addEventListener('popstate', onUrlChange);
+
+            const searchIndex = pages.map(page => ({
+                id: page.id,
+                title: page.querySelector('h1')?.textContent.toLowerCase() || '',
+                content: page.textContent.toLowerCase()
+            }));
+
+            searchBox.addEventListener('input', () => {
+                const query = searchBox.value.toLowerCase().trim();
+                searchResults.innerHTML = '';
+
+                if (query.length < 2) {
+                    return;
+                }
+
+                const results = searchIndex.filter(page =>
+                    page.title.includes(query) || page.content.includes(query)
+                );
+
+                results.slice(0, 10).forEach(result => {
+                    const navLink = document.querySelector(`.nav-link[href="#${result.id}"]`);
+                    if (navLink) {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        a.href = `#${result.id}`;
+                        a.textContent = navLink.textContent;
+                        a.classList.add('nav-link');
+                        a.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            navigateTo(result.id);
+                            searchBox.value = '';
+                            searchResults.innerHTML = '';
+                        });
+                        li.appendChild(a);
+                        searchResults.appendChild(li);
+                    }
+                });
+            });
+            onUrlChange();
+        });
+    </script>
+</body>
+
+</html>
