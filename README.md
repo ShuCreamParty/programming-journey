@@ -22,18 +22,9 @@ All my work is organized into language-specific folders to keep things tidy:
 
 ## 🎯 My Learning Goals
 
-*   [x] **C:** Master fundamentals like pointers, memory management (`malloc`/`free`), and data structures.
+*   [ ] **C:** Master fundamentals like pointers, memory management (`malloc`/`free`), and data structures.
 *   [ ] **Python:** Learn object-oriented programming and build a simple web scraper or API.
 *   [ ] **SQL:** Understand relational databases and write complex queries to analyze data.
-
-## 🚀 Demos & Highlights
-
-Here are a few highlights from my journey so far.
-
-#### C Language: Simple Calculator
-*   **Description:** A command-line calculator that can perform basic arithmetic. This was my first "real" project where I had to combine multiple concepts.
-*   **See it in action!** [▶️ Run this code on Replit](<!-- ここにReplitのリンクを貼る -->)
-
 
 ## 📜 License
 
